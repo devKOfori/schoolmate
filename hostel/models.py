@@ -97,7 +97,7 @@ class Room(models.Model):
     status = models.ForeignKey(RoomStatus, on_delete=models.SET_NULL, null=True)
     beds_count = models.PositiveBigIntegerField(default=1)
     room_area = models.CharField(max_length=255, blank=True)
-    additional_facilities = models.ManyToManyField(HostelFacility, on_delete=models.SET_NULL)
+    additional_facilities = models.ManyToManyField(HostelFacility)
 
     class Meta:
         db_table = "room"
