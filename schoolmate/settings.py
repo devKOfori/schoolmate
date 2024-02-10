@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     # 'hostel.apps.HostelConfig',
     'employee.apps.EmployeeConfig',
+    'housing.apps.HousingConfig',
 ]
 
 MIDDLEWARE = [
