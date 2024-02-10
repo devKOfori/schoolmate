@@ -5,32 +5,28 @@ from . import defaults as df
 from school.models import (
     Gender, Nationality, MaritalStatus, Relation
 )
+from user.models import CustomUser
 # Create your models here.
 
 class EmploymentType(models.Model):
     # full-time, part-time, temporary, contract, freelance, seasonal, and internship.
-    name = models.CharField(max_length=6)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 class EmergencyContact(models.Model):
-    employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
     emergency_contact_name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
-    relation = models.CharField(
+    relation = models.ForeignKey(
         Relation,
         on_delete = models.SET_DEFAULT,
         default = df.EMERGENCY_CONTACT.get('PREFIX') + df.EMERGENCY_CONTACT.get('DEFAULT_VALUE')
     )
 
-class Address(models.Model):
-    employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
-    street = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
-    state = models.CharField(max_length=255)
-    postal_code = models.CharField(max_length=10)
+    def __str__(self):
+        return self.emergency_contact_name
 
 class EmploymentStatus(models.Model):
     # active, on leave, terminated, laid off, retired, and resigned.
@@ -41,13 +37,15 @@ class EmploymentStatus(models.Model):
     
 class EmployeePosition(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
-    salary = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(blank=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
+    
 
 class Employee(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     employee_id = models.CharField(
         max_length=df.EMPLOYEE_ID.get('MAX_LENGTH'), 
         unique = df.EMPLOYEE_ID.get('UNIQUE')
@@ -63,16 +61,41 @@ class Employee(models.Model):
     hire_date = models.DateTimeField(default=timezone.now)
     employment_type = models.ForeignKey(
         EmploymentType, on_delete=models.SET_DEFAULT, 
-        default = df.EMPLOYMENT_TYPE.get('PREFIX') + df.EMPLOYMENT_TYPE.get('DEFAULT_VALUE')
+        default = 1
     )
     employment_status = models.ForeignKey(
         EmploymentStatus, on_delete=models.SET_DEFAULT, 
-        default=df.EMPLOYMENT_TYPE.get('PREFIX') + df.EMPLOYMENT_STATUS.get('DEFAULT_VALUE')
+        default=1
     )
-    department = models.CharField(max_length=255)
     position = models.ForeignKey(EmployeePosition, on_delete=models.SET_NULL, null=True)
     start_date = models.DateField(default=date.today)
     end_date = models.DateField(null=True, blank=True)
-    emergency_contact = models.ForeignKey(EmergencyContact, on_delete=models.SET_NULL, null=True)
+    emergency_contact = models.ForeignKey(EmergencyContact, on_delete=models.SET_NULL, null=True, related_name='employees')
     is_active = models.BooleanField(default=True)
-    photo = models.ImageField(upload_to='%Y%m%d', null=True, blank=True)
+    photo = models.ImageField(upload_to='photos/employee/%Y/%m/%d', null=True, blank=True)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+    
+class Address(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE )
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    postal_code = models.CharField(max_length=10)
+    digital_address = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.street}'
+    
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    head_of_department = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='department_head', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
