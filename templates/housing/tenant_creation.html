@@ -1,0 +1,15 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <div class = "error-message">
+    {% if error_message %}
+        {{error_message}}
+    {% endif %}
+    </div>
+    <form method="post">
+        {%csrf_token%}
+        {{user_form.as_p}}
+        {{tenant_form.as_p}}
+        <button type="submit">Register</button>
+    </form>
+{% endblock content %}

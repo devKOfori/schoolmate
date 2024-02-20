@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # 'hostel.apps.HostelConfig',
     'employee.apps.EmployeeConfig',
     'housing.apps.HousingConfig',
+    'finmate.apps.FinmateConfig',
 ]
 
 MIDDLEWARE = [

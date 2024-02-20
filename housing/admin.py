@@ -2,7 +2,9 @@ from django.contrib import admin
 from .models import (
     Facility, Hostel, Block, Floor,
     Address, HostelPhotos, RoomType, RoomStatus,
-    FacilityCategory
+    FacilityCategory, Tenant, RequestStatus, RoomOfferStatus,
+    RoomOfferResponse, RoomOffer, RoomRequest, OfferResponse, 
+    TenantRoomAssignment, Room, HostelAmenities, HostelStatus
 )
 # Register your models here.
 admin.site.register(FacilityCategory)
@@ -14,3 +16,14 @@ admin.site.register(Address)
 admin.site.register(HostelPhotos)
 admin.site.register(RoomType)
 admin.site.register(RoomStatus)
+admin.site.register(Tenant)
+admin.site.register(RequestStatus)
+admin.site.register(RoomOfferStatus)
+admin.site.register(RoomOfferResponse)
+admin.site.register(RoomOffer)
+admin.site.register(RoomRequest)
+admin.site.register(OfferResponse)
+admin.site.register(TenantRoomAssignment)
+admin.site.register(Room)
+admin.site.register(HostelStatus)
+admin.site.register(HostelAmenities)
