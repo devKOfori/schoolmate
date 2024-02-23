@@ -10,5 +10,5 @@ class EmployeeCreationForm(forms.ModelForm):
             "photo", "department", "company_code",
             "emergency_contact", "is_active", 
             "employment_status", "hire_date", "marital_status",
-            "user"
+            "user", "created_by"
         ]

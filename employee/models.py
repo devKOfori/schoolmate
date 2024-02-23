@@ -81,6 +81,7 @@ class Employee(models.Model):
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
     company_code = models.CharField(max_length=255, db_index=True)
     role = models.ForeignKey(EmployeeRole, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
