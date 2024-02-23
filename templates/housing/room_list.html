@@ -1,0 +1,14 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>All Rooms</h1>
+    {% if rooms %}
+        {% for room in rooms %}
+            <a href="{% url 'room-detail' room.room_number %}">{{room.room_number}}</a> - {{room.hostel}}
+            <hr>
+        {% endfor %}
+    {% else %}
+        <div>No rooms created</div>
+    {% endif %}
+    
+{% endblock content %}

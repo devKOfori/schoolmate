@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     Employee, EmergencyContact, EmployeePosition,
-    EmploymentStatus, EmploymentType, Address, Department
+    EmploymentStatus, EmploymentType, Address, Department,
+    EmployeeRole
 )
 # Register your models here.
 admin.site.register(Employee)
@@ -11,3 +12,4 @@ admin.site.register(EmploymentStatus)
 admin.site.register(EmploymentType)
 admin.site.register(Address)
 admin.site.register(Department)
+admin.site.register(EmployeeRole)

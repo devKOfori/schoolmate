@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # added apps
     'school.apps.SchoolConfig',
-    'user.apps.UserConfig',
+    'accounts.apps.AccountsConfig',
+    # 'user.apps.UserConfig',
     # 'hostel.apps.HostelConfig',
     'employee.apps.EmployeeConfig',
     'housing.apps.HousingConfig',
@@ -142,4 +143,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Authentication User Model
-AUTH_USER_MODEL = 'user.CustomUser'
+AUTH_USER_MODEL = 'accounts.CustomUser'

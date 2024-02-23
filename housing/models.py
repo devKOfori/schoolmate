@@ -2,10 +2,45 @@ from django.db import models
 from employee.models import Employee
 from school.models import Nationality, Region, City, Gender
 from datetime import date, datetime
-from user.models import CustomUser
 from finmate.models import PaymentFrequency
 from django.utils import timezone
+from accounts.models import CustomUser
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 # Create your models here.
+
+class VendorType(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class HostelVendor(models.Model):
+    vendor_code = models.CharField(max_length=255, unique=True, db_index=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=20)
+    address = models.CharField(max_length=255)
+    vendor_type = models.ForeignKey(VendorType, on_delete=models.SET_NULL, null=True) # e.g., Individual, Company
+    payment_method = models.CharField(max_length=50)  # e.g., Bank transfer, PayPal, Mobile Money
+    payment_details = models.CharField(max_length=255)  # e.g., Bank account number, PayPal ID
+    is_verified = models.BooleanField(default=False)
+    registration_number = models.CharField(max_length=50)
+    registration_date = models.DateField()
+    registration_authority = models.CharField(max_length=100)
+    description = models.TextField()
+    website_url = models.URLField()
+    facebook_url = models.URLField(blank=True)
+    twitter_url = models.URLField(blank=True)
+    instagram_url = models.URLField(blank=True)
+    payment_terms = models.TextField()
+    currency_preference = models.CharField(max_length=255)
+    cancellation_policy = models.TextField()
+    house_rules = models.TextField()
+    
+    def __str__(self):
+        return self.name
 
 class Block(models.Model):
     hostel = models.ForeignKey("Hostel", on_delete=models.CASCADE)
@@ -49,8 +84,8 @@ class Hostel(models.Model):
     company = models.CharField(max_length=255)
     status = models.ForeignKey(HostelStatus, on_delete=models.SET_NULL, null=True)
     amenities = models.ManyToManyField(HostelAmenities)
+    vendor = models.ForeignKey(HostelVendor, on_delete=models.SET_NULL, null=True)
     
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         block = None
@@ -58,6 +93,10 @@ class Hostel(models.Model):
             block = Block.objects.create(hostel = self, block_id = self.hostel_id, name = self.name)
         if not Floor.objects.filter(floor_id=self.hostel_id).exists():
             Floor.objects.create(block=block, name=self.name, floor_id=self.hostel_id)
+
+    def assign_warden(self, employee):
+        self.warden = employee
+        self.save()
 
     def __str__(self):
         return self.name
@@ -98,6 +137,13 @@ class RoomStatus(models.Model):
 
     def __str__(self):
         return self.name
+    
+class OccupancyStatus(models.Model):
+    # e.g., completely occupied, partially occupied, empty
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class FacilityCategory(models.Model):
     name = models.CharField(max_length=255)
@@ -115,12 +161,13 @@ class Facility(models.Model):
     
 class Room(models.Model):
     hostel = models.ForeignKey(Hostel, on_delete=models.CASCADE)
-    room_number = models.CharField(max_length=255, db_index=True)
+    room_number = models.CharField(max_length=255, db_index=True, unique=True)
     block = models.ForeignKey(Block, on_delete=models.SET_NULL, null=True, blank=True)
     floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True)
     capacity = models.PositiveIntegerField(default=0)
     room_type = models.ForeignKey(RoomType, on_delete=models.SET_DEFAULT, default=1)
     room_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
+    occupancy_status = models.ForeignKey(OccupancyStatus, on_delete=models.SET_NULL, null=True)
     facilities = models.ManyToManyField(Facility, blank=True)
 
     def __str__(self):
@@ -208,13 +255,82 @@ class RoomOfferResponse(models.Model):
     def __str__(self):
         return self.roomofferresponse_number
 
+class AssignmentUpdateType(models.Model):
+    # eg. assigned (default), renewed, terminated,
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class AssignmentUpdate(models.Model):
+    assignment = models.ForeignKey(
+        "TenantRoomAssignment", on_delete=models.CASCADE
+    )
+    updated_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    update_type = models.ForeignKey(AssignmentUpdateType, on_delete=models.SET_DEFAULT, default=1)
+    comment = models.TextField()
+    original_start_date = models.DateTimeField()
+    original_end_date = models.DateTimeField(null=True, blank=True)
+    original_termination_date = models.DateTimeField(null=True, blank=True)
+    new_start_date = models.DateTimeField()
+    new_end_date = models.DateTimeField(null=True, blank=True)
+    new_termination_date = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.assignment} - [{self.update_type}]"
+    
 class TenantRoomAssignment(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)
+    termination_date = models.DateTimeField(null=True, blank=True)
+    assignment_status = models.ForeignKey(AssignmentUpdateType, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.tenant} - {self.room.hostel}, {self.room}"
     
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        room = self.room
+        partially_occupied = completely_occupied = None
+        try:
+            partially_occupied = OccupancyStatus.objects.get(name="Partially Occupied")
+            completely_occupied = OccupancyStatus.objects.get(name="Fully Occupied")
+        except OccupancyStatus.DoesNotExist:
+            # Handle the case where occupancy status objects don't exist
+            pass
 
+        if partially_occupied and completely_occupied:
+            current_assignment_count = room.tenantroomassignment_set.filter(
+                Q(end_date__isnull=True) | Q(end_date__gt=timezone.now())
+            ).count()
+            print(current_assignment_count)
+            if current_assignment_count < room.capacity:
+                room.occupancy_status = partially_occupied
+            elif current_assignment_count == room.capacity:
+                room.occupancy_status = completely_occupied
+
+            room.save()
+    
+    def update_assignment(self, update_type, new_start_date, new_end_date=None, new_termination_date=None, updated_by=None, comment=None):
+        if updated_by:
+            AssignmentUpdate.objects.create(
+                assignment=self,
+                updated_by=updated_by,
+                update_type=update_type,
+                comment=comment,
+                original_start_date=self.start_date,
+                original_end_date=self.end_date,
+                original_termination_date=self.termination_date,
+                new_start_date=new_start_date,
+                new_end_date=new_end_date,
+                new_termination_date=new_termination_date
+            )
+        self.start_date = new_start_date
+        self.end_date = new_end_date
+        self.termination_date = new_termination_date
+        self.assignment_status = update_type
+        self.save()

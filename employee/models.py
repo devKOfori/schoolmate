@@ -5,7 +5,7 @@ from . import defaults as df
 from school.models import (
     Gender, Nationality, MaritalStatus, Relation
 )
-from user.models import CustomUser
+from accounts.models import CustomUser
 # Create your models here.
 
 class EmploymentType(models.Model):
@@ -42,7 +42,12 @@ class EmployeePosition(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+class EmployeeRole(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class Employee(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -74,9 +79,14 @@ class Employee(models.Model):
     is_active = models.BooleanField(default=True)
     photo = models.ImageField(upload_to='photos/employee/%Y/%m/%d', null=True, blank=True)
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
+    company_code = models.CharField(max_length=255, db_index=True)
+    role = models.ForeignKey(EmployeeRole, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
     
 class Address(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE )

@@ -1,0 +1,11 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h3>Create Hostel Page</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{hostel_form}}
+        {{address_form}}
+        <input type="submit" value="Create Hostel">
+    </form>
+{% endblock content %}

@@ -5,4 +5,6 @@ from django.urls import reverse
 # Create your views here.
 
 def dashboard(request):
-    return render(request, "school/dashboard.html")
+    employee = request.user.employee
+    print(employee)
+    return render(request, "school/dashboard.html", {"employee": employee})

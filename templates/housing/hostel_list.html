@@ -1,0 +1,15 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>Hostel Listings Page</h1>
+    {% if hostels %}
+        {% for hostel in hostels %}
+            <a href="{% url 'hostel-detail' hostel.hostel_id %}">
+                {{hostel.name}}
+            </a>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <span>No Hostels available</span>
+    {% endif %}
+{% endblock content %}
