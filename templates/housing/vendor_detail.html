@@ -1,0 +1,7 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>{{vendor.name}}</h1>
+    <hr>
+    <a href="{% url 'create-hostel' %}">Create Hostel</a>
+{% endblock content %}

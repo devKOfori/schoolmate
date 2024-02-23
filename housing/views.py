@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from .forms import (
     TenantCreationForm, HostelCreationForm, HostelAddressForm,
-    BlockCreationForm, RoomCreationForm, RoomAssignmentForm
+    BlockCreationForm, RoomCreationForm, RoomAssignmentForm,
+    HostelVendorCreationForm
 )
 from accounts.forms import (
     UserCreationForm
 )
 from .models import (
-    HostelStatus, Hostel, Room
+    HostelStatus, Hostel, Room, HostelVendor
 )
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
@@ -136,3 +137,21 @@ def assign_room(request):
         return render(request, "housing/assign_room.html", context)
     else:
         return render(request, "housing/assign_room.html", context)
+    
+def setup_vendor(request):
+    vendor_form = HostelVendorCreationForm()
+    employee = request.user.employee
+    if request.method == "POST":
+        vendor_form = HostelVendorCreationForm(request.POST)
+        if vendor_form.is_valid():
+            vendor = vendor_form.save(commit=False)
+            vendor.created_by = employee
+            vendor.save()
+            return redirect(reverse("vendor-detail", kwargs={"vendor_id":vendor.vendor_id}))
+        return render(request, "housing/create_vendor.html", {"vendor_form":vendor_form})
+    else:
+        return render(request, "housing/create_vendor.html", {"vendor_form":vendor_form})
+
+def vendor_detail(request, vendor_id):
+    vendor = get_object_or_404(HostelVendor, vendor_id=vendor_id)
+    return render(request, "housing/vendor_detail.html", {"vendor":vendor})

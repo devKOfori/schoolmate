@@ -14,33 +14,58 @@ class VendorType(models.Model):
 
     def __str__(self):
         return self.name
+    
+class PaymentMethod(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class HostelVendor(models.Model):
-    vendor_code = models.CharField(max_length=255, unique=True, db_index=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    vendor_id = models.CharField(max_length=255, unique=True, db_index=True)
+    # user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
     vendor_type = models.ForeignKey(VendorType, on_delete=models.SET_NULL, null=True) # e.g., Individual, Company
-    payment_method = models.CharField(max_length=50)  # e.g., Bank transfer, PayPal, Mobile Money
-    payment_details = models.CharField(max_length=255)  # e.g., Bank account number, PayPal ID
     is_verified = models.BooleanField(default=False)
     registration_number = models.CharField(max_length=50)
     registration_date = models.DateField()
     registration_authority = models.CharField(max_length=100)
-    description = models.TextField()
-    website_url = models.URLField()
-    facebook_url = models.URLField(blank=True)
-    twitter_url = models.URLField(blank=True)
-    instagram_url = models.URLField(blank=True)
-    payment_terms = models.TextField()
-    currency_preference = models.CharField(max_length=255)
-    cancellation_policy = models.TextField()
-    house_rules = models.TextField()
-    
+    description = models.TextField(blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    facebook_url = models.URLField(blank=True, null=True)
+    twitter_url = models.URLField(blank=True, null=True)
+    instagram_url = models.URLField(blank=True, null=True)
+    cancellation_policy = models.TextField(blank=True, null=True)
+    house_rules = models.TextField(blank=True, null=True)
+    payment_details = models.ForeignKey("PaymentDetail", on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        try:
+            employee = Employee.objects.get(id=self.created_by.id)
+            employee.company_code = self.vendor_id
+            employee.save()
+        except ObjectDoesNotExist:
+            pass
+
+class PaymentDetail(models.Model):
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)  # e.g., Bank transfer, PayPal, Mobile Money
+    method_details = models.CharField(max_length=255)  # e.g., Bank account number, PayPal ID
+    payment_terms = models.TextField(blank=True, null=True)
+    currency_preference = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.payment_method} - {self.method_details}"
 
 class Block(models.Model):
     hostel = models.ForeignKey("Hostel", on_delete=models.CASCADE)

@@ -1,0 +1,10 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>Vendor Creation Page</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{vendor_form}}
+        <input type="submit" value="Create Vendor Profile">
+    </form>
+{% endblock content %}

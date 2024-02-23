@@ -5,7 +5,8 @@ from .models import (
     FacilityCategory, Tenant, RequestStatus, RoomOfferStatus,
     RoomOfferResponse, RoomOffer, RoomRequest, OfferResponse, 
     TenantRoomAssignment, Room, HostelAmenities, HostelStatus,
-    OccupancyStatus, VendorType, HostelVendor
+    OccupancyStatus, VendorType, HostelVendor, PaymentDetail, 
+    PaymentMethod
 )
 # Register your models here.
 admin.site.register(FacilityCategory)
@@ -31,3 +32,5 @@ admin.site.register(HostelAmenities)
 admin.site.register(OccupancyStatus)
 admin.site.register(VendorType)
 admin.site.register(HostelVendor)
+admin.site.register(PaymentDetail)
+admin.site.register(PaymentMethod)

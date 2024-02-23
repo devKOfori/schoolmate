@@ -12,4 +12,6 @@ urlpatterns = [
     path("<str:hostel_id>/list-room", views.room_list, name="list-room"),
     path("rooms/all/", views.all_rooms, name="all-rooms"),
     path("rooms/<str:room_number>/", views.room_detail, name="room-detail"),
+    path("create-vendor", views.setup_vendor, name="create-vendor"),
+    path("vendor/<str:vendor_id>/", views.vendor_detail, name="vendor-detail"),
 ]

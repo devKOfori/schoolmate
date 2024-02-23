@@ -53,4 +53,9 @@ class RoomAssignmentForm(forms.ModelForm):
         return cleaned_data
     
 class HostelVendorCreationForm(forms.ModelForm):
-    pass
+    class Meta:
+        model = HostelVendor
+        exclude = [
+            "created_by",
+            "payment_details", "is_verified", "description",
+        ]
