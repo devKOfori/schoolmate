@@ -6,5 +6,5 @@ from django.urls import reverse
 
 def dashboard(request):
     employee = request.user.employee
-    print(employee)
+    # print(employee)
     return render(request, "school/dashboard.html", {"employee": employee})

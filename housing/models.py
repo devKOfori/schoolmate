@@ -1,6 +1,9 @@
 from django.db import models
 from employee.models import Employee
-from school.models import Nationality, Region, City, Gender
+from school.models import (
+    Nationality, Region, City, Gender,
+    Country
+)
 from datetime import date, datetime
 from finmate.models import PaymentFrequency
 from django.utils import timezone
@@ -110,6 +113,8 @@ class Hostel(models.Model):
     status = models.ForeignKey(HostelStatus, on_delete=models.SET_NULL, null=True)
     amenities = models.ManyToManyField(HostelAmenities)
     vendor = models.ForeignKey(HostelVendor, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name="hostels")
+
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -129,7 +134,7 @@ class Hostel(models.Model):
     
 class Address(models.Model):
     hostel = models.OneToOneField(Hostel, on_delete=models.CASCADE)
-    country = models.ForeignKey(Nationality, on_delete=models.SET_NULL, null=True, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     street = models.CharField(max_length=255, blank=True)
@@ -225,28 +230,28 @@ class RoomOfferStatus(models.Model):
         return self.name
 
 class RoomRequest(models.Model):
-    request_number = models.CharField(max_length=255, unique=True, db_index=True)
+    request_id = models.CharField(max_length=255, unique=True, db_index=True)
     tenant_name = models.CharField(max_length=255)
     tenant_email = models.EmailField()
     tenant_phone = models.CharField(max_length=255)
     date_of_birth = models.DateField()
-    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
-    preferred_hostels = models.ManyToManyField(Hostel)
-    preferred_blocks = models.ManyToManyField(Block)
-    preferred_floors = models.ManyToManyField(Floor)
-    preferred_amenities = models.ManyToManyField(HostelAmenities)
-    preferred_room_types = models.ManyToManyField(RoomType)
-    preferred_facilities = models.ManyToManyField(Facility)
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
+    preferred_hostels = models.ManyToManyField(Hostel, blank=True)
+    # preferred_blocks = models.ManyToManyField(Block)
+    # preferred_floors = models.ManyToManyField(Floor)
+    preferred_amenities = models.ManyToManyField(HostelAmenities, blank=True)
+    preferred_room_types = models.ManyToManyField(RoomType, blank=True)
+    preferred_facilities = models.ManyToManyField(Facility, blank=True)
     number_of_beds_required = models.PositiveIntegerField(default=1)
-    move_in_date_earliest = models.DateTimeField("Move In Date (Earliest By)")
-    move_in_date_latest = models.DateTimeField("Move In Date (Latest By)")
-    duration_of_stay = models.PositiveIntegerField(default=1)
-    min_budget = models.DecimalField(max_digits=10, decimal_places=2)
-    max_budget = models.DecimalField(max_digits=10, decimal_places=2)
-    preferred_payment_frequency = models.ForeignKey(PaymentFrequency, on_delete=models.SET_NULL, null=True)
+    move_in_date_earliest = models.DateTimeField("Move In Date (Earliest By)", null=True, blank=True)
+    move_in_date_latest = models.DateTimeField("Move In Date (Latest By)", null=True, blank=True)
+    duration_of_stay = models.PositiveIntegerField(blank=True, null=True)
+    min_budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    max_budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    preferred_payment_frequency = models.ForeignKey(PaymentFrequency, on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
-    request_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
+    request_status = models.ForeignKey(RequestStatus, on_delete=models.SET_DEFAULT, default=1)
 
     def __str__(self):
         return self.request_number

@@ -49,7 +49,9 @@ def register(request):
             employee = employee_form.save(commit=False)
             employee.user = user
             if role.id == 2:
-                employee.company_code = request.user.employee.company_code
+                creator = request.user.employee
+                employee.company_code = creator.company_code
+                employee.created_by = creator
             employee.save()
             return redirect(reverse("login"))
         return render(request, "authentication/register.html", {"employee_form": employee_form})

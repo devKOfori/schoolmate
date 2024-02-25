@@ -1,0 +1,14 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>List of Vendors</h1>
+    <hr>
+    {% if vendors %}
+        {% for vendor in vendors %}
+            <a href="{% url 'vendor-detail' vendor.vendor_id %}">{{vendor}}</a><br>
+        {% endfor %}
+    {% else %}
+    <div>No Vendor has been setup</div>
+    {% endif %}
+    <a href="{% url 'create-vendor' %}">Add Vendor</a>
+{% endblock content %}

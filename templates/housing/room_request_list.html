@@ -1,0 +1,15 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>Room Requests Page</h1>
+    <hr>
+    {% if room_requests %}
+    {% for room_request in room_requests %}
+        <div>
+            <a href="{% url 'room-request-detail' room_request.request_id %}">{{room_request.request_id}}</a> - {{room_request.tenant_name}}
+        </div>
+    {% endfor %}
+    {% else %}
+        <div>No requests. Check back later</div>
+    {% endif %}
+{% endblock content %}

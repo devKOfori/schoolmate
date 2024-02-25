@@ -12,8 +12,12 @@
 </head>
 <body>
     <div class="container">
+        <div>
+            <a href="{% url 'dashboard' %}">Home</a>
+            <hr>
+        </div>
         {% block content %}
-        
+
         {% endblock content %}
     </div>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

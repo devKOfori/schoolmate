@@ -2,16 +2,18 @@ from django.shortcuts import render, redirect
 from .forms import (
     TenantCreationForm, HostelCreationForm, HostelAddressForm,
     BlockCreationForm, RoomCreationForm, RoomAssignmentForm,
-    HostelVendorCreationForm
+    HostelVendorCreationForm, RoomRequestCreationForm
 )
 from accounts.forms import (
     UserCreationForm
 )
 from .models import (
-    HostelStatus, Hostel, Room, HostelVendor
+    HostelStatus, Hostel, Room, HostelVendor,
+    RoomRequest
 )
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 
@@ -33,6 +35,8 @@ def register_tenant(request):
         return render(request, "housing/tenant_creation.html", {"user_form": user_form, "tenant_form": tenant_form})
     
 def create_hostel(request):
+    company_code = request.user.employee.company_code
+    vendor = HostelVendor.objects.get(vendor_id=company_code)
     hostel_form = HostelCreationForm(prefix="hostel")
     hostel_address_form = HostelAddressForm(prefix="address")
     default_hostel_status = HostelStatus.objects.first()
@@ -41,8 +45,9 @@ def create_hostel(request):
         hostel_address_form = HostelAddressForm(request.POST, prefix="address")
         if hostel_form.is_valid() and hostel_address_form.is_valid():
             hostel = hostel_form.save(commit=False)
-            hostel.created_by = request.user
+            hostel.created_by = request.user.employee
             # hostel.warden = request.user
+            hostel.vendor = vendor
             hostel.status = default_hostel_status
             hostel.save()
             address = hostel_address_form.save(commit=False)
@@ -61,6 +66,15 @@ def hostel_detail(request, hostel_id):
         "rooms": hostel_rooms
     }
     return render(request, "housing/hostel_detail.html", context)
+
+def my_hostels(request):
+    me = request.user.employee
+    my_vendor = HostelVendor.objects.get(vendor_id=me.company_code)
+    hostels = Hostel.objects.filter(vendor=my_vendor)
+    context = {
+        "hostels": hostels
+    }
+    return render(request, "housing/hostel_list.html", context=context)
 
 def hostel_list(request):
     hostels = Hostel.objects.all()
@@ -151,7 +165,47 @@ def setup_vendor(request):
         return render(request, "housing/create_vendor.html", {"vendor_form":vendor_form})
     else:
         return render(request, "housing/create_vendor.html", {"vendor_form":vendor_form})
+    
+def all_vendors(request):
+    vendors = HostelVendor.objects.all()
+    context = {
+        "vendors": vendors
+    }
+    return render(request, "housing/vendor_list.html", context)
+
+def my_vendors(request):
+    me = request.user.employee
+    vendors = HostelVendor.objects.filter(created_by=me)
+    context = {
+        "vendors": vendors
+    }
+    return render(request, "housing/vendor_list.html", context)
 
 def vendor_detail(request, vendor_id):
     vendor = get_object_or_404(HostelVendor, vendor_id=vendor_id)
     return render(request, "housing/vendor_detail.html", {"vendor":vendor})
+
+def request_room(request):
+    room_request_form = RoomRequestCreationForm()
+    if request.method == "POST":
+        room_request_form = RoomRequestCreationForm(request.POST)
+        if room_request_form.is_valid():
+            room_request = room_request_form.save()
+            return redirect(reverse("dashboard"))
+        return render(request, "housing/room_request.html", {"room_request_form":room_request_form})
+    else:
+        return render(request, "housing/room_request.html", {"room_request_form":room_request_form})
+    
+def all_room_requests(request):
+    room_requests = RoomRequest.objects.all()
+    context = {
+        "room_requests": room_requests
+    }
+    return render(request, "housing/room_request_list.html", context)
+
+def room_request_detail(request, request_id):
+    room_request = get_object_or_404(RoomRequest, request_id=request_id)
+    context = {
+        "room_request": room_request
+    }
+    return render(request, "housing/room_request_detail.html", context)

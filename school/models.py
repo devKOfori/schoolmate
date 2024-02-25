@@ -14,6 +14,14 @@ class Nationality(models.Model):
     def __str__(self):
         return self.name
     
+class Country(models.Model):
+    name = models.CharField(max_length=255)
+    country_code = models.CharField(max_length=255)
+    abbreviation = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+    
 class Region(models.Model):
     name = models.CharField(max_length=255)
 

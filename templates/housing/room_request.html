@@ -1,0 +1,11 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <h1>Room Request Page</h1>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+        {{room_request_form}}
+        <input type="submit" value="Make Request">
+    </form>
+{% endblock content %}
