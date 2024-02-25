@@ -3,7 +3,7 @@ from django import forms
 from .models import (
     Tenant, Hostel, Address, Block, 
     Room, TenantRoomAssignment, HostelVendor,
-    RoomRequest
+    RoomRequest, RoomOffer, RoomOfferDetails
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -70,4 +70,14 @@ class RoomRequestCreationForm(forms.ModelForm):
         exclude = [
             "date_created", "last_modified", 
             "request_status"
+        ]
+
+class RoomOfferDetailsCreationForm(forms.ModelForm):
+    room_request_id = forms.CharField(max_length=255)
+    offer_number = forms.CharField(max_length=255)
+
+    class Meta:
+        model = RoomOfferDetails
+        exclude = [
+            "room_offer", "room", "offered_by", "offer_status"
         ]

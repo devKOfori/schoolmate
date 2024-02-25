@@ -14,6 +14,7 @@ from .models import (
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 # Create your views here.
 
 
@@ -205,7 +206,46 @@ def all_room_requests(request):
 
 def room_request_detail(request, request_id):
     room_request = get_object_or_404(RoomRequest, request_id=request_id)
+    preferences = room_request.get_preferences()
+    prefered_hostels = preferences.get("hostels")
+    prefered_amenities = preferences.get("amenities")
+    prefered_room_types = preferences.get("room_types")
+    prefered_facilities = preferences.get("facilities")
+    number_of_beds = preferences.get("number_of_beds")
+    min_budget = preferences.get("min_budget")
+    max_budget = preferences.get("max_budget")
+    duration_of_stay = preferences.get("duration_of_stay")
+    move_in_date_earliest = preferences.get("move_in_date_earliest")
+    move_in_date_latest = preferences.get("move_in_date_latest")
+
+    preferrence_filters = Q()
+    hostels_filter = Q()
+
+    if prefered_hostels:
+        hostels_filter &= Q(preferred_hostels__name__in=prefered_hostels)
+    if prefered_amenities:
+        preferrence_filters &= Q(preferred_amenities__name__in=prefered_amenities)
+    if prefered_room_types:
+        preferrence_filters &= Q(preferred_room_types__name__in=prefered_room_types)
+    if prefered_facilities:
+        preferrence_filters &= Q(preferred_facilities__name__in=prefered_facilities)
+    if number_of_beds:
+        preferrence_filters &= Q(number_of_beds_required=number_of_beds)
+    if min_budget:
+        preferrence_filters &= Q(min_budget=min_budget)
+    if max_budget:
+        preferrence_filters &= Q(max_budget=max_budget)
+    if duration_of_stay:
+        preferrence_filters &= Q(duration_of_stay=duration_of_stay)
+    if move_in_date_earliest:
+        preferrence_filters &= Q(move_in_date_earliest=move_in_date_earliest)
+    if move_in_date_latest:
+        preferrence_filters &= Q(move_in_date_latest=move_in_date_latest)
+    
+    available_rooms = Room.objects.filter(preferrence_filters)
+    
     context = {
-        "room_request": room_request
+        "room_request": room_request, 
+        "available_rooms": available_rooms
     }
     return render(request, "housing/room_request_detail.html", context)

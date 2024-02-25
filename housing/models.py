@@ -74,6 +74,7 @@ class Block(models.Model):
     hostel = models.ForeignKey("Hostel", on_delete=models.CASCADE)
     block_id = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -87,6 +88,7 @@ class HostelStatus(models.Model):
 class HostelAmenities(models.Model):
     # eg. Gym, Laundry Room, TV Room
     name = models.CharField(max_length=255)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -95,6 +97,7 @@ class Floor(models.Model):
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
     floor_id = models.CharField(max_length=255, unique=True, db_index=True)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -114,6 +117,7 @@ class Hostel(models.Model):
     amenities = models.ManyToManyField(HostelAmenities)
     vendor = models.ForeignKey(HostelVendor, on_delete=models.SET_NULL, null=True)
     created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name="hostels")
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     
     def save(self, *args, **kwargs):
@@ -151,12 +155,11 @@ class HostelPhotos(models.Model):
 
     def __str__(self):
         return self.title
-
-    
     
 class RoomType(models.Model):
     # e.g., single, double, shared, dormitory
     name = models.CharField(max_length=255)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -184,7 +187,7 @@ class FacilityCategory(models.Model):
 class Facility(models.Model):
     name = models.CharField(max_length=255)
     facility_category = models.ForeignKey(FacilityCategory, on_delete=models.SET_NULL, null=True, blank=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -199,6 +202,9 @@ class Room(models.Model):
     room_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
     occupancy_status = models.ForeignKey(OccupancyStatus, on_delete=models.SET_NULL, null=True)
     facilities = models.ManyToManyField(Facility, blank=True)
+    number_of_beds = models.PositiveBigIntegerField(default=1)
+    availability_date = models.DateTimeField(default=timezone.now)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return self.room_number
@@ -253,18 +259,50 @@ class RoomRequest(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     request_status = models.ForeignKey(RequestStatus, on_delete=models.SET_DEFAULT, default=1)
 
+    def get_preferences(self):
+        preferences = {
+            "hostels": list(self.preferred_hostels.all()),
+            "amenities": list(self.preferred_amenities.all()),
+            "room_types": list(self.preferred_room_types.all()),
+            "facilities": list(self.preferred_facilities.all()),
+            "number_of_beds": self.number_of_beds_required,
+            "min_budget": self.min_budget,
+            "max_budget": self.max_budget,
+            "duration_of_stay": self.duration_of_stay,
+            "move_in_date_earliest": self.move_in_date_earliest,
+            "move_in_date_latest": self.move_in_date_latest
+        }
+        
+        preferences = {key: value for key, value in preferences.items() if value}
+        
+        return preferences
+
     def __str__(self):
-        return self.request_number
+        return self.request_id
     
 class RoomOffer(models.Model):
     room_request = models.ForeignKey(RoomRequest, on_delete=models.SET_NULL, null=True)    
-    offer_number = models.CharField(max_length=255)
-    date_offered = models.DateTimeField(auto_now_add=True)
-    offer_status = models.ForeignKey(RoomOfferStatus, on_delete=models.SET_NULL, null=True)
-    rooms_offered = models.ManyToManyField(Room)
+    offer_number = models.CharField(max_length=255, unique=True, db_index=True)
+    # rooms_offered = models.ManyToManyField(Room)
+    rooms_offered_new = models.ManyToManyField(Room, through="RoomOfferDetails")
 
     def __str__(self):
         return self.offer_number
+
+class RoomOfferDetails(models.Model):
+    room_offer = models.ForeignKey(RoomOffer, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    date_offered = models.DateTimeField(auto_now_add=True)
+    offer_status = models.ForeignKey(RoomOfferStatus, on_delete=models.SET_NULL, null=True)
+    valid_until = models.DateTimeField(blank=True, null=True)
+    comment= models.TextField(blank=True)
+    offered_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        unique_together = ("room_offer", "room")
+
+    def __str__(self):
+        return f"{self.room_offer} - {self.room}"
 
 class OfferResponse(models.Model):
     # eg. Pending, Accepted, Rejected

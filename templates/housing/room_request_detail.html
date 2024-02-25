@@ -4,4 +4,13 @@
     <h1>Room Request Details</h1>
     <hr>
     {{room_request.request_id}} - {{room_request.tenant_name}}
+    <div>
+        {% if available_rooms %}
+            {% for room in available_rooms %}
+                <div>{{room}}</div>
+            {% endfor %}
+        {% else %}
+        <div>No rooms to meet selected criteria</div>
+        {% endif %}
+    </div>
 {% endblock content %}
