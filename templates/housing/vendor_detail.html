@@ -4,4 +4,6 @@
     <h1>{{vendor.name}}</h1>
     <hr>
     <a href="{% url 'create-hostel' %}">Create Hostel</a>
+
+    <a href="{% url 'verify-property' vendor.vendor_id %}">Verify Vendor</a>
 {% endblock content %}

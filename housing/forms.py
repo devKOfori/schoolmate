@@ -3,11 +3,18 @@ from django import forms
 from .models import (
     Tenant, Hostel, Address, Block, 
     Room, TenantRoomAssignment, HostelVendor,
-    RoomRequest, RoomOffer, RoomOfferDetails
+    RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty
 )
 from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+
+class VerifyPropertyForm(forms.ModelForm):
+    class Meta:
+        model = VerifyProperty
+        exclude = [
+            "upload_date", "upload_by", "application_id"
+        ]        
 
 class TenantCreationForm(forms.ModelForm):
     class Meta:

@@ -6,7 +6,7 @@
     {% if room_requests %}
     {% for room_request in room_requests %}
         <div>
-            <a href="{% url 'room-request-detail' room_request.request_id %}">{{room_request.request_id}}</a> - {{room_request.tenant_name}}
+            {{room_request.request_id}} - {{room_request.tenant_name}}
         </div>
     {% endfor %}
     {% else %}

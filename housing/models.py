@@ -12,6 +12,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 # Create your models here.
 
+class VericationDocumentType(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
 class VendorType(models.Model):
     name = models.CharField(max_length=255)
 
@@ -59,6 +65,26 @@ class HostelVendor(models.Model):
             employee.save()
         except ObjectDoesNotExist:
             pass
+
+class PropertyType(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class VerifyProperty(models.Model):
+    property_type = models.ForeignKey(PropertyType, on_delete=models.SET_NULL, null=True)
+    application_id = models.CharField(max_length=255) # this field is used to store the ID of the application to which this document is attached
+    verification_document_type = models.ForeignKey(
+        VericationDocumentType, on_delete=models.SET_NULL, null=True
+    )
+    attachment = models.FileField("Attach Document", upload_to="media/verification_document/%Y/%m/%d")
+    upload_date = models.DateTimeField(auto_now_add=True)
+    upload_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
+    verifypropertyinfo = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.application_id
 
 class PaymentDetail(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)  # e.g., Bank transfer, PayPal, Mobile Money
@@ -205,6 +231,8 @@ class Room(models.Model):
     number_of_beds = models.PositiveBigIntegerField(default=1)
     availability_date = models.DateTimeField(default=timezone.now)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.room_number
@@ -236,6 +264,7 @@ class RoomOfferStatus(models.Model):
         return self.name
 
 class RoomRequest(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.SET_NULL, null=True)
     request_id = models.CharField(max_length=255, unique=True, db_index=True)
     tenant_name = models.CharField(max_length=255)
     tenant_email = models.EmailField()

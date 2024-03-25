@@ -6,9 +6,11 @@ from .models import (
     RoomOfferResponse, RoomOffer, RoomRequest, OfferResponse, 
     TenantRoomAssignment, Room, HostelAmenities, HostelStatus,
     OccupancyStatus, VendorType, HostelVendor, PaymentDetail, 
-    PaymentMethod
+    PaymentMethod, VericationDocumentType, PropertyType
 )
 # Register your models here.
+admin.site.register(VericationDocumentType)
+admin.site.register(PropertyType)
 admin.site.register(FacilityCategory)
 admin.site.register(Facility)
 admin.site.register(Hostel)
