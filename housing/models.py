@@ -89,6 +89,7 @@ class VerifyProperty(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     upload_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     verifypropertyinfo = models.TextField(blank=True)
+    property_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.application_id
@@ -119,6 +120,13 @@ class UpdateDocumentVerification(models.Model):
 
     def __str__(self):
         return f"{self.verify_property.application_id} - {self.verification_status.name}"
+
+    def save(self, *args, **kwargs):
+        super.save(*args, **kwargs)
+        verify_property = self.verify_property
+        if self.verification_status == "Approved":
+            verify_property.property_verified = True
+            verify_property.save()
 
 class PaymentDetail(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)  # e.g., Bank transfer, PayPal, Mobile Money

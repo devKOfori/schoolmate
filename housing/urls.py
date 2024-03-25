@@ -30,6 +30,7 @@ urlpatterns = [
     # path("rooms/requests/<str:request_id>/", views.room_request_detail, name="room-request-detail"),
     path("rooms/<str:room_number>/", views.room_detail, name="room-detail"),
     path("assign-room/", views.assign_room, name="assign-room"),
+    path("verify-property/all/", views.DocumentVerificationListView.as_view(), name="list-property-verification"),
     path("verify-property/<str:property_id>/", views.verify_property, name="verify-property"),
-    path("verify-property/<str:property_id>/update", views.update_document_verification, name="update-verification"),
+    path("verify-property/<str:property_id>/update", views.UpdateDocumentVerificationCreateView.as_view(), name="update-verification"),
 ]

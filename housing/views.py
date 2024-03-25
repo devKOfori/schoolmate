@@ -13,7 +13,7 @@ from accounts.forms import (
 )
 from .models import (
     HostelStatus, Hostel, Room, HostelVendor,
-    RoomRequest
+    RoomRequest, VerifyProperty
 )
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
@@ -167,7 +167,10 @@ class UpdateDocumentVerificationCreateView(generic.CreateView):
         """
         form.instance.comment = ""
         return super().form_valid(form)
-    
+
+class DocumentVerificationListView(generic.ListView):
+    model = VerifyProperty
+    template_name = "housing/document_verification_list.html"
     
 
 def create_block(request, hostel_id):
