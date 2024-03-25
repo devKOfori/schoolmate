@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from .forms import (
     TenantCreationForm, HostelCreationForm, HostelAddressForm,
@@ -5,6 +6,8 @@ from .forms import (
     HostelVendorCreationForm, RoomRequestCreationForm, 
     VerifyPropertyForm
 )
+from . import forms
+from . import models
 from accounts.forms import (
     UserCreationForm
 )
@@ -16,6 +19,8 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+
+from django.views import generic
 # Create your views here.
 
 
@@ -137,10 +142,32 @@ def verify_property(request, property_id):
         if verify_property_form.is_valid():
             verify_property = verify_property_form.save(commit=False)
             verify_property.application_id = property_id
+            verify_property.upload_by = request.user.employee
+            verify_property.save()
             return redirect(reverse("vendor-detail", kwargs={"vendor_id": property_id}))
         return render(request, "housing/upload_verification_document.html", {"verify_property_form": verify_property_form})
     else:
         return render(request, "housing/upload_verification_document.html", {"verify_property_form": verify_property_form})
+
+class UpdateDocumentVerificationCreateView(generic.CreateView):
+    model = models.UpdateDocumentVerification
+    form_class = forms.UpdateDocumentVerificationForm
+    template_name = "housing/create_update_document_verification.html"
+
+    def form_valid(self, form, *args, **kwargs):
+        form.instance.verify_property = kwargs.get("property_id")
+        form.instance.updatedocumentverification_id = kwargs.get("property_id")
+        form.instance.date_of_update = datetime.datetime.today()
+        form.instance.updated_by = self.request.user.employee
+        form.instance.last_update_message = f"""
+            The verification was last updated by employee ID:
+            {self.request.user.employee.employee_id}, employee Name: 
+            {self.request.user.employee}
+            on {str(datetime.datetime.now())}    
+        """
+        form.instance.comment = ""
+        return super().form_valid(form)
+    
     
 
 def create_block(request, hostel_id):

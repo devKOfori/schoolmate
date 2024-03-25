@@ -10,6 +10,7 @@ from django.utils import timezone
 from accounts.models import CustomUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+import os
 # Create your models here.
 
 class VericationDocumentType(models.Model):
@@ -72,19 +73,52 @@ class PropertyType(models.Model):
     def __str__(self):
         return self.name
 
+def upload_to(instance, filename):
+    date_dir = f"{date.today().year}{str(date.today().month).zfill(2)}{str(date.today().day).zfill(2)}"
+    new_filename = f"{instance.application_id}_document_{filename}"
+    upload_destination = os.path.join("verification_document", date_dir, new_filename)
+    return upload_destination
+
 class VerifyProperty(models.Model):
     property_type = models.ForeignKey(PropertyType, on_delete=models.SET_NULL, null=True)
     application_id = models.CharField(max_length=255) # this field is used to store the ID of the application to which this document is attached
     verification_document_type = models.ForeignKey(
         VericationDocumentType, on_delete=models.SET_NULL, null=True
     )
-    attachment = models.FileField("Attach Document", upload_to="media/verification_document/%Y/%m/%d")
+    attachment = models.FileField("Attach Document", upload_to=upload_to)
     upload_date = models.DateTimeField(auto_now_add=True)
     upload_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     verifypropertyinfo = models.TextField(blank=True)
 
     def __str__(self):
         return self.application_id
+    
+class DocumentVerificationStatus(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+class UpdateDocumentVerification(models.Model):
+    updatedocumentverification_id = models.CharField(max_length=255, unique=True, db_index=True)
+    verify_property = models.ForeignKey(
+        VerifyProperty, on_delete = models.CASCADE
+    )
+    verification_status = models.ForeignKey(
+        DocumentVerificationStatus, 
+        on_delete=models.SET_NULL, 
+        null=True
+    )
+    date_of_update = models.DateField(default=timezone.now)
+    updated_by = models.ForeignKey(
+        Employee, on_delete=models.DO_NOTHING,
+    )
+    updated_on = models.DateTimeField(auto_now_add=True)
+    last_update_message = models.CharField(max_length=255)
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.verify_property.application_id} - {self.verification_status.name}"
 
 class PaymentDetail(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)  # e.g., Bank transfer, PayPal, Mobile Money

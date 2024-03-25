@@ -3,7 +3,8 @@ from django import forms
 from .models import (
     Tenant, Hostel, Address, Block, 
     Room, TenantRoomAssignment, HostelVendor,
-    RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty
+    RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty,
+    UpdateDocumentVerification
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -16,6 +17,12 @@ class VerifyPropertyForm(forms.ModelForm):
             "upload_date", "upload_by", "application_id"
         ]        
 
+class UpdateDocumentVerificationForm(forms.ModelForm):
+    class Meta:
+        model = UpdateDocumentVerification
+        fields = [
+            "verification_status"
+        ]
 class TenantCreationForm(forms.ModelForm):
     class Meta:
         model = Tenant
