@@ -4,7 +4,7 @@ from .forms import (
     TenantCreationForm, HostelCreationForm, HostelAddressForm,
     BlockCreationForm, RoomCreationForm, RoomAssignmentForm,
     HostelVendorCreationForm, RoomRequestCreationForm, 
-    VerifyPropertyForm
+    VerifyPropertyForm, UpdateDocumentVerificationForm
 )
 from . import forms
 from . import models
@@ -15,7 +15,7 @@ from .models import (
     HostelStatus, Hostel, Room, HostelVendor,
     RoomRequest, VerifyProperty
 )
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -144,6 +144,8 @@ def verify_property(request, property_id):
             verify_property.application_id = property_id
             verify_property.upload_by = request.user.employee
             verify_property.save()
+            if verify_property.property_type.name.upper() == "HOSTEL":
+                return redirect(reverse("hostel-detail", kwargs={"hostel_id": property_id}))
             return redirect(reverse("vendor-detail", kwargs={"vendor_id": property_id}))
         return render(request, "housing/upload_verification_document.html", {"verify_property_form": verify_property_form})
     else:
@@ -153,10 +155,15 @@ class UpdateDocumentVerificationCreateView(generic.CreateView):
     model = models.UpdateDocumentVerification
     form_class = forms.UpdateDocumentVerificationForm
     template_name = "housing/create_update_document_verification.html"
+    success_url = reverse_lazy("list-property-verification")
 
     def form_valid(self, form, *args, **kwargs):
-        form.instance.verify_property = kwargs.get("property_id")
-        form.instance.updatedocumentverification_id = kwargs.get("property_id")
+        property_id = self.kwargs.get("property_id")
+        verify_property = get_object_or_404(VerifyProperty, application_id=property_id)
+        # filter = Q(application_id=property_id) & Q(property_type=form.instance.verify_property)
+
+        form.instance.verify_property = verify_property
+        form.instance.updatedocumentverification_id = property_id + "_" + str(datetime.datetime.now())
         form.instance.date_of_update = datetime.datetime.today()
         form.instance.updated_by = self.request.user.employee
         form.instance.last_update_message = f"""
@@ -168,10 +175,17 @@ class UpdateDocumentVerificationCreateView(generic.CreateView):
         form.instance.comment = ""
         return super().form_valid(form)
 
+  
 class DocumentVerificationListView(generic.ListView):
     model = VerifyProperty
     template_name = "housing/document_verification_list.html"
-    
+    context_object_name = "documentverifications"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        update_form = UpdateDocumentVerificationForm()
+        context["update_form"] = update_form
+        return context
 
 def create_block(request, hostel_id):
     hostel = get_object_or_404(Hostel, hostel_id = hostel_id)

@@ -11,4 +11,5 @@
     {% else %}
         <div>No rooms created for this hostel</div>
     {% endif %}
+    <div><a href="{% url 'verify-property' hostel.hostel_id %}">Verify Hostel</a></div>
 {% endblock content %}

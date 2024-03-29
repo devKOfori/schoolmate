@@ -87,9 +87,13 @@ class VerifyProperty(models.Model):
     )
     attachment = models.FileField("Attach Document", upload_to=upload_to)
     upload_date = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
     upload_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     verifypropertyinfo = models.TextField(blank=True)
     property_verified = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("application_id", "verification_document_type")
 
     def __str__(self):
         return self.application_id
@@ -121,12 +125,13 @@ class UpdateDocumentVerification(models.Model):
     def __str__(self):
         return f"{self.verify_property.application_id} - {self.verification_status.name}"
 
-    def save(self, *args, **kwargs):
-        super.save(*args, **kwargs)
+    def save(self, property_id=None, *args, **kwargs):
+        super().save(*args, **kwargs)
         verify_property = self.verify_property
-        if self.verification_status == "Approved":
+        verify_property.property_verified = False
+        if self.verification_status.name == "Approved":
             verify_property.property_verified = True
-            verify_property.save()
+        verify_property.save()
 
 class PaymentDetail(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)  # e.g., Bank transfer, PayPal, Mobile Money
