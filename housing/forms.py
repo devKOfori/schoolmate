@@ -1,10 +1,10 @@
 from typing import Any
 from django import forms
 from .models import (
-    Tenant, Hostel, Address, Block, 
-    Room, TenantRoomAssignment, HostelVendor,
+    HostelTenant, Hostel, HostelAddress, Block, 
+    Room, AssignRoom, HostelVendor,
     RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty,
-    UpdateDocumentVerification
+    DocumentVerificationPro
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -19,13 +19,13 @@ class VerifyPropertyForm(forms.ModelForm):
 
 class UpdateDocumentVerificationForm(forms.ModelForm):
     class Meta:
-        model = UpdateDocumentVerification
+        model = DocumentVerificationPro
         fields = [
             "verification_status"
         ]
 class TenantCreationForm(forms.ModelForm):
     class Meta:
-        model = Tenant
+        model = HostelTenant
         exclude = ["user", "email"]
 
     
@@ -39,7 +39,7 @@ class HostelCreationForm(forms.ModelForm):
 
 class HostelAddressForm(forms.ModelForm):
     class Meta:
-        model = Address
+        model = HostelAddress
         exclude = ["hostel"]
 
 class BlockCreationForm(forms.ModelForm):
@@ -54,7 +54,7 @@ class RoomCreationForm(forms.ModelForm):
 
 class RoomAssignmentForm(forms.ModelForm):
     class Meta:
-        model = TenantRoomAssignment
+        model = AssignRoom
         fields = ["tenant", "room", "start_date", "end_date"]
 
     def clean(self):

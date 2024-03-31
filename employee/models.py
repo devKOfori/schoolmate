@@ -12,6 +12,9 @@ class EmploymentType(models.Model):
     # full-time, part-time, temporary, contract, freelance, seasonal, and internship.
     name = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "employmenttype"
+
     def __str__(self):
         return self.name
 
@@ -25,12 +28,18 @@ class EmergencyContact(models.Model):
         default = df.EMERGENCY_CONTACT.get('PREFIX') + df.EMERGENCY_CONTACT.get('DEFAULT_VALUE')
     )
 
+    class Meta:
+        db_table = "emergencycontact"
+
     def __str__(self):
         return self.emergency_contact_name
 
 class EmploymentStatus(models.Model):
     # active, on leave, terminated, laid off, retired, and resigned.
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "employmentstatus"
 
     def __str__(self):
         return self.name
@@ -40,11 +49,17 @@ class EmployeePosition(models.Model):
     description = models.TextField(blank=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
+    class Meta:
+        db_table = "employeeposition"
+
     def __str__(self):
         return self.name
 
 class EmployeeRole(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "employeerole"
 
     def __str__(self):
         return self.name
@@ -83,6 +98,9 @@ class Employee(models.Model):
     role = models.ForeignKey(EmployeeRole, on_delete=models.SET_NULL, null=True)
     created_by = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        db_table = "employee"
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
     
@@ -97,6 +115,9 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=10)
     digital_address = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "address"
+
     def __str__(self):
         return f'{self.street}'
     
@@ -106,6 +127,9 @@ class Department(models.Model):
     head_of_department = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='department_head', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "department"
 
     def __str__(self):
         return self.name

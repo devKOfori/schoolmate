@@ -9,5 +9,8 @@ class PaymentFrequency(models.Model):
     
     description = models.TextField(null=True)
 
+    class Meta:
+        db_table = "paymentfrequency"
+
     def __str__(self):
         return self.name

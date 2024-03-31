@@ -143,6 +143,7 @@ def verify_property(request, property_id):
             verify_property = verify_property_form.save(commit=False)
             verify_property.application_id = property_id
             verify_property.upload_by = request.user.employee
+            verify_property.valid = True
             verify_property.save()
             if verify_property.property_type.name.upper() == "HOSTEL":
                 return redirect(reverse("hostel-detail", kwargs={"hostel_id": property_id}))
@@ -152,7 +153,7 @@ def verify_property(request, property_id):
         return render(request, "housing/upload_verification_document.html", {"verify_property_form": verify_property_form})
 
 class UpdateDocumentVerificationCreateView(generic.CreateView):
-    model = models.UpdateDocumentVerification
+    model = models.DocumentVerificationPro
     form_class = forms.UpdateDocumentVerificationForm
     template_name = "housing/create_update_document_verification.html"
     success_url = reverse_lazy("list-property-verification")
@@ -161,17 +162,15 @@ class UpdateDocumentVerificationCreateView(generic.CreateView):
         property_id = self.kwargs.get("property_id")
         verify_property = get_object_or_404(VerifyProperty, application_id=property_id)
         # filter = Q(application_id=property_id) & Q(property_type=form.instance.verify_property)
-
+        doc_ver_pro = models.DocumentVerificationPro.objects.filter(verify_property=verify_property).last()
+        if doc_ver_pro:
+            doc_ver_pro.valid = False
+            doc_ver_pro.save()
         form.instance.verify_property = verify_property
         form.instance.updatedocumentverification_id = property_id + "_" + str(datetime.datetime.now())
         form.instance.date_of_update = datetime.datetime.today()
         form.instance.updated_by = self.request.user.employee
-        form.instance.last_update_message = f"""
-            The verification was last updated by employee ID:
-            {self.request.user.employee.employee_id}, employee Name: 
-            {self.request.user.employee}
-            on {str(datetime.datetime.now())}    
-        """
+        form.instance.last_update_message = f"The update is done by employee ID: {self.request.user.employee.employee_id}, employee Name: {self.request.user.employee} on {str(datetime.datetime.now())}"
         form.instance.comment = ""
         return super().form_valid(form)
 

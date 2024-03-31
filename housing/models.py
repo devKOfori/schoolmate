@@ -1,5 +1,5 @@
 from django.db import models
-from employee.models import Employee
+from employee.models import Employee, EmployeeRole
 from school.models import (
     Nationality, Region, City, Gender,
     Country
@@ -11,10 +11,14 @@ from accounts.models import CustomUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 import os
+from django.shortcuts import get_object_or_404
 # Create your models here.
 
 class VericationDocumentType(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "verificationdocumenttype"
 
     def __str__(self):
         return self.name
@@ -22,11 +26,17 @@ class VericationDocumentType(models.Model):
 class VendorType(models.Model):
     name = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "vendortype"
+
     def __str__(self):
         return self.name
     
 class PaymentMethod(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "paymentmethod"
 
     def __str__(self):
         return self.name
@@ -55,6 +65,9 @@ class HostelVendor(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = "hostelvendor"
+
     def __str__(self):
         return self.name
     
@@ -69,7 +82,10 @@ class HostelVendor(models.Model):
 
 class PropertyType(models.Model):
     name = models.CharField(max_length=255)
-
+    
+    class Meta:
+        db_table = "propertytype"
+    
     def __str__(self):
         return self.name
 
@@ -91,8 +107,10 @@ class VerifyProperty(models.Model):
     upload_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     verifypropertyinfo = models.TextField(blank=True)
     property_verified = models.BooleanField(default=False)
+    valid = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "verifyproperty"
         unique_together = ("application_id", "verification_document_type")
 
     def __str__(self):
@@ -101,10 +119,13 @@ class VerifyProperty(models.Model):
 class DocumentVerificationStatus(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
+    class Meta:
+        db_table = "documentverificationstatus"
+
     def __str__(self):
         return self.name
 
-class UpdateDocumentVerification(models.Model):
+class DocumentVerificationPro(models.Model):
     updatedocumentverification_id = models.CharField(max_length=255, unique=True, db_index=True)
     verify_property = models.ForeignKey(
         VerifyProperty, on_delete = models.CASCADE
@@ -121,6 +142,10 @@ class UpdateDocumentVerification(models.Model):
     updated_on = models.DateTimeField(auto_now_add=True)
     last_update_message = models.CharField(max_length=255)
     comment = models.TextField(blank=True)
+    valid = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "documentverificationpro"
 
     def __str__(self):
         return f"{self.verify_property.application_id} - {self.verification_status.name}"
@@ -128,10 +153,53 @@ class UpdateDocumentVerification(models.Model):
     def save(self, property_id=None, *args, **kwargs):
         super().save(*args, **kwargs)
         verify_property = self.verify_property
-        verify_property.property_verified = False
+        badge = Badge.objects.filter(property_code=self.verify_property.application_id).first()
         if self.verification_status.name == "Approved":
             verify_property.property_verified = True
-        verify_property.save()
+            verify_property.save()
+            if badge:
+                badge.date_given = datetime.now()
+                badge.save()
+            else:
+                # last_badge = Badge.objects.last()
+                badge_code = self.verify_property.application_id
+                # if last_badge:
+                #     last_badge_id = last_badge.id
+                #     badge_code = "B" + str(last_badge_id).zfill(5)
+                badge_property_type = self.verify_property.property_type
+                badge_property_code = self.verify_property.application_id
+                badge_expiry_date = None
+                badge = Badge(
+                    badge_code = badge_code,
+                    property_type = badge_property_type,
+                    property_code = badge_property_code,
+                    expiry_date = badge_expiry_date,
+                    valid = True
+                )
+                badge.save()
+        else:
+            verify_property.property_verified = False
+            print(f"0000000000000000\n{badge}")
+            verify_property.save()
+            if badge:
+                badge.valid = False
+                badge.save()
+        
+
+
+class Badge(models.Model):
+    badge_code = models.CharField(max_length = 255, unique=True, db_index=True)
+    property_type = models.ForeignKey(PropertyType, on_delete=models.SET_NULL, null=True)
+    property_code = models.CharField(max_length=255)
+    date_given = models.DateTimeField(auto_now_add=True)
+    expiry_date = models.DateField(blank=True, null=True)
+    valid = models.BooleanField()
+
+    class Meta:
+        db_table = "badge"
+
+    def __str__(self):
+        return self.badge_code
 
 class PaymentDetail(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)  # e.g., Bank transfer, PayPal, Mobile Money
@@ -139,6 +207,9 @@ class PaymentDetail(models.Model):
     payment_terms = models.TextField(blank=True, null=True)
     currency_preference = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = "paymentdetail"
 
     def __str__(self):
         return f"{self.payment_method} - {self.method_details}"
@@ -149,11 +220,17 @@ class Block(models.Model):
     name = models.CharField(max_length=255)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
+    class Meta:
+        db_table = "block"
+
     def __str__(self):
         return self.name
     
 class HostelStatus(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "hostelstatus"
 
     def __str__(self):
         return self.name
@@ -162,6 +239,9 @@ class HostelAmenities(models.Model):
     # eg. Gym, Laundry Room, TV Room
     name = models.CharField(max_length=255)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        db_table = "hostelamenities"
 
     def __str__(self):
         return self.name
@@ -172,8 +252,38 @@ class Floor(models.Model):
     floor_id = models.CharField(max_length=255, unique=True, db_index=True)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
+    class Meta:
+        db_table = "floor"
+
     def __str__(self):
         return self.name
+    
+class HostelRoles(models.Model):
+    #e.g. roles = ["Default", "Manager", "Hostel Admin", "Porter", "Cleaner", "Wood Worker"]
+    name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        db_table = "hostelroles"
+
+    def __str__(self):
+        return self.name
+
+class HostelEmployeeAlloc(models.Model):
+    hostel = models.ForeignKey("Hostel", on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="hostel_alloc")
+    role = models.ForeignKey(HostelRoles, on_delete=models.SET_NULL, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    role_end_date = models.DateTimeField(blank=True, null=True)
+    added_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
+    active = models.BooleanField(default=True)
+    comment = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = "hostelemployeealloc"
+        unique_together = ("hostel", "role", "employee")
+
+    def __str__(self):
+        return f"{self.employee} - {self.hostel} - {self.role}"
 
 class Hostel(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -196,26 +306,38 @@ class Hostel(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         block = None
+        manager = HostelRoles.objects.filter(name="Manager").first()
         if not Block.objects.filter(block_id=self.hostel_id).exists():
             block = Block.objects.create(hostel = self, block_id = self.hostel_id, name = self.name)
         if not Floor.objects.filter(floor_id=self.hostel_id).exists():
             Floor.objects.create(block=block, name=self.name, floor_id=self.hostel_id)
-
+        HostelEmployeeAlloc.objects.create(
+            hostel = self,
+            employee = self.created_by,
+            role = manager,
+            added_by = self.created_by
+        )
     def assign_warden(self, employee):
         self.warden = employee
         self.save()
+
+    class Meta:
+        db_table = "hostel"
 
     def __str__(self):
         return self.name
     
     
-class Address(models.Model):
+class HostelAddress(models.Model):
     hostel = models.OneToOneField(Hostel, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     street = models.CharField(max_length=255, blank=True)
     digital_address = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        db_table = "hosteladdress"
 
     def __str__(self):
         return f"{self.hostel} - {self.street}"
@@ -226,6 +348,9 @@ class HostelPhotos(models.Model):
     description = models.TextField(blank=True)
     photo = models.ImageField(upload_to="photos/hostels/%Y/%m/%d")
 
+    class Meta:
+        db_table = "hostelphotos"
+
     def __str__(self):
         return self.title
     
@@ -234,12 +359,18 @@ class RoomType(models.Model):
     name = models.CharField(max_length=255)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
+    class Meta:
+        db_table = "roomtype"
+
     def __str__(self):
         return self.name
     
 class RoomStatus(models.Model):
     # e.g., clean, under maintenance, needs repair
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "roomstatus"
 
     def __str__(self):
         return self.name
@@ -248,11 +379,17 @@ class OccupancyStatus(models.Model):
     # e.g., completely occupied, partially occupied, empty
     name = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "occupancystatus"
+
     def __str__(self):
         return self.name
 
 class FacilityCategory(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "facilitycategory"
 
     def __str__(self):
         return self.name
@@ -261,6 +398,9 @@ class Facility(models.Model):
     name = models.CharField(max_length=255)
     facility_category = models.ForeignKey(FacilityCategory, on_delete=models.SET_NULL, null=True, blank=True)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        db_table = "facility"
 
     def __str__(self):
         return self.name
@@ -281,10 +421,13 @@ class Room(models.Model):
     created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = "room"
+
     def __str__(self):
         return self.room_number
     
-class Tenant(models.Model):
+class HostelTenant(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
@@ -293,12 +436,18 @@ class Tenant(models.Model):
     email = models.EmailField()
     address = models.CharField(max_length=255, blank=True)
 
+    class Meta:
+        db_table = "hosteltenant"
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
 class RequestStatus(models.Model):
     # eg. Pending, Room Offered, Room Accepted, Cancelled, Room Rejected
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "requeststatus"
 
     def __str__(self):
         return self.name
@@ -307,11 +456,14 @@ class RoomOfferStatus(models.Model):
     # eg. Pending, Accepted, Rejected, Withdrawn
     name = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "roomofferstatus"
+
     def __str__(self):
         return self.name
 
 class RoomRequest(models.Model):
-    tenant = models.ForeignKey(Tenant, on_delete=models.SET_NULL, null=True)
+    tenant = models.ForeignKey(HostelTenant, on_delete=models.SET_NULL, null=True)
     request_id = models.CharField(max_length=255, unique=True, db_index=True)
     tenant_name = models.CharField(max_length=255)
     tenant_email = models.EmailField()
@@ -353,6 +505,9 @@ class RoomRequest(models.Model):
         
         return preferences
 
+    class Meta:
+        db_table = "roomrequest"
+
     def __str__(self):
         return self.request_id
     
@@ -361,6 +516,9 @@ class RoomOffer(models.Model):
     offer_number = models.CharField(max_length=255, unique=True, db_index=True)
     # rooms_offered = models.ManyToManyField(Room)
     rooms_offered_new = models.ManyToManyField(Room, through="RoomOfferDetails")
+
+    class Meta:
+        db_table = "roomoffer"
 
     def __str__(self):
         return self.offer_number
@@ -377,12 +535,18 @@ class RoomOfferDetails(models.Model):
     class Meta:
         unique_together = ("room_offer", "room")
 
+    class Meta:
+        db_table = "roomofferdetails"
+
     def __str__(self):
         return f"{self.room_offer} - {self.room}"
 
 class OfferResponse(models.Model):
     # eg. Pending, Accepted, Rejected
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "offerresponse"
 
     def __str__(self):
         return self.name
@@ -396,6 +560,9 @@ class RoomOfferResponse(models.Model):
     comment = models.TextField(blank=True)
     rent_paid = models.BooleanField(default=False)
 
+    class Meta:
+        db_table = "roomofferresponse"
+
     def __str__(self):
         return self.roomofferresponse_number
 
@@ -403,12 +570,15 @@ class AssignmentUpdateType(models.Model):
     # eg. assigned (default), renewed, terminated,
     name = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "assignmentupdatetype"
+
     def __str__(self):
         return self.name
 
 class AssignmentUpdate(models.Model):
     assignment = models.ForeignKey(
-        "TenantRoomAssignment", on_delete=models.CASCADE
+        "AssignRoom", on_delete=models.CASCADE
     )
     updated_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -421,16 +591,22 @@ class AssignmentUpdate(models.Model):
     new_end_date = models.DateTimeField(null=True, blank=True)
     new_termination_date = models.DateTimeField(null=True, blank=True)
     
+    class Meta:
+        db_table = "assignmentupdate"
+
     def __str__(self):
         return f"{self.assignment} - [{self.update_type}]"
     
-class TenantRoomAssignment(models.Model):
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+class AssignRoom(models.Model):
+    tenant = models.ForeignKey(HostelTenant, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)
     termination_date = models.DateTimeField(null=True, blank=True)
     assignment_status = models.ForeignKey(AssignmentUpdateType, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        db_table = "assignroom"
 
     def __str__(self):
         return f"{self.tenant} - {self.room.hostel}, {self.room}"
@@ -478,3 +654,4 @@ class TenantRoomAssignment(models.Model):
         self.termination_date = new_termination_date
         self.assignment_status = update_type
         self.save()
+

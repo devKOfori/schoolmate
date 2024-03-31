@@ -53,7 +53,7 @@ def register(request):
                 employee.company_code = creator.company_code
                 employee.created_by = creator
             employee.save()
-            return redirect(reverse("login"))
+            return redirect(reverse("dashboard"))
         return render(request, "authentication/register.html", {"employee_form": employee_form})
     else:
         return render(request, "authentication/register.html", {"employee_form": employee_form})
