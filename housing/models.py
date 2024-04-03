@@ -271,7 +271,9 @@ class HostelRoles(models.Model):
 
 class HostelEmployeeAlloc(models.Model):
     hostel = models.ForeignKey("Hostel", on_delete=models.CASCADE)
+    hostel_code = models.CharField(max_length=255, default="", db_index=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="hostel_alloc")
+    employee_code = models.CharField(max_length=255, default="", db_index=True)
     role = models.ForeignKey(HostelRoles, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     role_end_date = models.DateTimeField(blank=True, null=True)
@@ -287,82 +289,52 @@ class HostelEmployeeAlloc(models.Model):
         return f"{self.employee} - {self.hostel} - {self.role}"
 
     def save(self, *args, **kwargs):
-        # emp_id = kwargs.get("employee_id")
-        # added_by = kwargs.get("added_by")
-        # print(f"{emp_id} - {added_by}")
-        # if emp_id and added_by:
-        #     emp = Employee.objects.get(employee_id=emp_id)
-        #     emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(employee=emp).last()
-        #     if not emp_hostel_alloc.role == self.role:
-        #         utils.deactivate_role(emp_hostel_alloc=emp_hostel_alloc)
-        #         self.hostel = emp_hostel_alloc.hostel
-        #         self.employee = emp_hostel_alloc.employee
-        #         self.active = True
-        #         self.comment = ""
-        #         self.added_by = added_by
-        #         self.timestamp = datetime.now()
-        #         print(self)
-        #         # super().save(*args, **kwargs)
-        #         utils.update_emp_info(
-        #             employee=emp,
-        #             hostel_id=emp_hostel_alloc.hostel.hostel_id
-        #         )
-        # else:
-        emp = self.employee
-        # employee_id = self.employee.employee_id
-        # created_by = kwargs.pop("created_by", None)
-        created_by = self.added_by
-        # print(created_by)
+        employee_id = kwargs.get("employee_id")
+        added_by = kwargs.get("added_by")
+        if employee_id and added_by:
+            emp = Employee.objects.filter(
+                employee_id = employee_id
+            ).last()
+        else:
+            print(self)
+            emp = self.employee
+            # created_by = self.added_by
         try:
-            # emp = Employee.objects.get(employee_id=employee_id)
             emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(
                 employee=emp
             ).last()
+            print(f"((((((((((((((((({emp_hostel_alloc}")
             if emp_hostel_alloc:
-                # emp_hostel_alloc.active = False
-                # emp_hostel_alloc.role_end_date = datetime.now()
-                # emp_hostel_alloc.save()
-                utils.deactivate_role(emp_hostel_alloc=emp_hostel_alloc)
+                if emp_hostel_alloc.active:
+                    utils.deactivate_role(emp_hostel_alloc=emp_hostel_alloc)
+                    emp_hostel_alloc.save()
+            else:
+                # new_role = HostelEmployeeAlloc(
+                #     hostel = self.hostel,
+                #     hostel_code = self.hostel.hostel_id,
+                #     employee = self.employee,
+                #     employee_code = self.employee.employee_id,
+                #     role = self.role,
+                #     timestamp = datetime.now(),
+                #     role_end_date = None,
+                #     added_by = self.added_by,
+                #     active = True,
+                #     comment = ""
+                # )
+                # new_role.save()
+                self.hostel_code = self.hostel.hostel_id
+                self.employee_code = self.employee.employee_id
+                super().save(*args, **kwargs)
         except ObjectDoesNotExist:
             pass
         finally:
-            super().save(*args, **kwargs)
+            # super().save(*args, **kwargs)
             utils.update_emp_info(
                 employee=emp,
                 hostel_id=self.hostel.hostel_id
             )   
             
      
-        
-        
-        
-        # emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(
-        #         employee=emp
-        #     ).last()
-        # if not emp_hostel_alloc:
-        #     emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(
-        #             employee=created_by
-        #         ).last()
-        # if emp and created_by and emp_hostel_alloc:
-        #     # Deactivate current role
-        #     hostel = emp_hostel_alloc.hostel
-        #     emp_hostel_alloc.active = False
-        #     emp_hostel_alloc.role_end_date = datetime.now()
-        #     emp_hostel_alloc.comment = f"Role changed at {datetime.now()}"
-        #     emp_hostel_alloc.save()
-
-        #     # Create new role
-        #     self.hostel = hostel
-        #     self.employee = emp
-        #     self.timestamp = datetime.now()
-        #     self.added_by = created_by
-        #     self.active = True
-        #     self.comment = ""
-        # super().save(*args, **kwargs)
-        # utils.update_emp_info(
-        #     employee=emp,
-        #     hostel_id=emp_hostel_alloc.hostel.hostel_id
-        # )
 
 class Hostel(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -392,7 +364,9 @@ class Hostel(models.Model):
             Floor.objects.create(block=block, name=self.name, floor_id=self.hostel_id)
         HostelEmployeeAlloc.objects.create(
             hostel = self,
+            hoste_code = self.hostel_id,
             employee = self.created_by,
+            employee_code = self.created_by.employee_id,
             role = manager,
             added_by = self.created_by
         )

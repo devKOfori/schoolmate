@@ -77,6 +77,6 @@ def assign_default_role(employee: Employee, created_by: Employee):
             timestamp = datetime.now(),
             added_by = created_by
         )
-    print(employee_hostel_alloc)
+    # print(employee_hostel_alloc)
     employee_hostel_alloc.save()
     return employee_hostel_alloc     
