@@ -289,53 +289,44 @@ class HostelEmployeeAlloc(models.Model):
         return f"{self.employee} - {self.hostel} - {self.role}"
 
     def save(self, *args, **kwargs):
-        employee_id = kwargs.get("employee_id")
-        added_by = kwargs.get("added_by")
+        employee_id = getattr(self, "upd_employee_id", None)
+        added_by = getattr(self, "upd_added_by", None)
+        # print(f"{employee_id} - {added_by}")
         if employee_id and added_by:
             emp = Employee.objects.filter(
                 employee_id = employee_id
             ).last()
         else:
-            print(self)
             emp = self.employee
-            # created_by = self.added_by
         try:
             emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(
                 employee=emp
             ).last()
-            print(f"((((((((((((((((({emp_hostel_alloc}")
             if emp_hostel_alloc:
-                if emp_hostel_alloc.active:
-                    utils.deactivate_role(emp_hostel_alloc=emp_hostel_alloc)
-                    emp_hostel_alloc.save()
+                self.hostel = emp_hostel_alloc.hostel
+                self.hostel_code = emp_hostel_alloc.hostel_code
+                self.employee = emp_hostel_alloc.employee
+                self.employee_code = emp_hostel_alloc.employee_code
+                self.timestamp = datetime.now()
+                self.role_end_date = None
+                self.added_by = added_by
+                self.active = True
+                self.comment = ""
+                super().save(*args, **kwargs)
             else:
-                # new_role = HostelEmployeeAlloc(
-                #     hostel = self.hostel,
-                #     hostel_code = self.hostel.hostel_id,
-                #     employee = self.employee,
-                #     employee_code = self.employee.employee_id,
-                #     role = self.role,
-                #     timestamp = datetime.now(),
-                #     role_end_date = None,
-                #     added_by = self.added_by,
-                #     active = True,
-                #     comment = ""
-                # )
-                # new_role.save()
                 self.hostel_code = self.hostel.hostel_id
                 self.employee_code = self.employee.employee_id
                 super().save(*args, **kwargs)
         except ObjectDoesNotExist:
             pass
         finally:
-            # super().save(*args, **kwargs)
+            print(f"999999999999999999999 {emp}")
             utils.update_emp_info(
                 employee=emp,
                 hostel_id=self.hostel.hostel_id
             )   
             
      
-
 class Hostel(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     hostel_id = models.CharField(max_length=255, unique=True) # unique code assigned to each hostel

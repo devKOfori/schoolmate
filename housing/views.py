@@ -347,9 +347,11 @@ class HostelEmployeeAllocCreateView(generic.CreateView):
     success_url = reverse_lazy("my-employee")
 
     def form_valid(self, form):
-        employee_id = self.request.POST.get("employee_id")
-        
-        form.instance.save(employee_id = employee_id, added_by=self.request.user.employee)
+        employee_id = self.request.POST.get("upd_employee_id")
+        form_type = self.request.POST.get("form_type")
+        # if form_type:
+        setattr(form.instance, "upd_employee_id", employee_id)
+        setattr(form.instance, "upd_added_by", self.request.user.employee)
         return super().form_valid(form)
 
 

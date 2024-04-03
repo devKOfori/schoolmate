@@ -97,9 +97,11 @@ class Employee(models.Model):
     company_code = models.CharField(max_length=255, db_index=True)
     role = models.ForeignKey(EmployeeRole, on_delete=models.SET_NULL, null=True)
     created_by = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     emp_info = models.CharField(max_length=255, default="")
     class Meta:
         db_table = "employee"
+        ordering = ["first_name", "last_name", "created_at"]
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

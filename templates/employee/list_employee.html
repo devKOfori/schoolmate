@@ -21,13 +21,14 @@
                         <td>{{employee.phone}}</td>
                         <td>
                             {% comment %} {{employee.hostel}} {% endcomment %}
-                            {{hostel_alloc.role}}
+                            {{employee.hostel_role}}
                         </td>
                         <td>
                             <form action="{% url 'update-role' %}" method="post">
-                                {%csrf_token%}
-                                <input type="hidden" name="employee_id" value="{{employee.employee_id}}">
-                                {{role_assign_form}}
+                                {% csrf_token %}
+                                {{ role_assign_form }}
+                                <input type="hidden" name="upd_employee_id" value="{{employee.employee_id}}">
+                                {% comment %} <input type="hidden" name="form_type" value="change_role"> {% endcomment %}
                                 <input type="submit" value="Update">
                             </form>
                         </td>
