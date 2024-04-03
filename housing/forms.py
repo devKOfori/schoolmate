@@ -4,7 +4,7 @@ from .models import (
     HostelTenant, Hostel, HostelAddress, Block, 
     Room, AssignRoom, HostelVendor,
     RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty,
-    DocumentVerificationPro
+    DocumentVerificationPro, HostelEmployeeAlloc,
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -94,4 +94,11 @@ class RoomOfferDetailsCreationForm(forms.ModelForm):
         model = RoomOfferDetails
         exclude = [
             "room_offer", "room", "offered_by", "offer_status"
+        ]
+
+class HostelEmployeeAllocForm(forms.ModelForm):
+    class Meta:
+        model = HostelEmployeeAlloc
+        fields = [
+            "role",
         ]

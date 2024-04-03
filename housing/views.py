@@ -1,10 +1,12 @@
 import datetime
 from django.shortcuts import render, redirect
+from django.core.exceptions import ObjectDoesNotExist
 from .forms import (
     TenantCreationForm, HostelCreationForm, HostelAddressForm,
     BlockCreationForm, RoomCreationForm, RoomAssignmentForm,
     HostelVendorCreationForm, RoomRequestCreationForm, 
-    VerifyPropertyForm, UpdateDocumentVerificationForm
+    VerifyPropertyForm, UpdateDocumentVerificationForm,
+    HostelEmployeeAllocForm
 )
 from . import forms
 from . import models
@@ -15,6 +17,7 @@ from .models import (
     HostelStatus, Hostel, Room, HostelVendor,
     RoomRequest, VerifyProperty
 )
+from employee import models as employee_models
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -22,8 +25,8 @@ from django.db.models import Q
 
 from django.views import generic
 # Create your views here.
-
-
+import utils
+from django.utils import timezone
 def register_tenant(request):
     user_form = UserCreationForm(prefix="user")
     tenant_form = TenantCreationForm(prefix="tenant")
@@ -336,3 +339,40 @@ def my_hostel_requests(request):
 #         "available_rooms": available_rooms
 #     }
 #     return render(request, "housing/room_request_detail.html", context)
+
+class HostelEmployeeAllocCreateView(generic.CreateView):
+    model = models.HostelEmployeeAlloc
+    form_class = HostelEmployeeAllocForm
+    template_name = "housing/assign_new_role.html"
+    success_url = reverse_lazy("my-employee")
+
+    def form_valid(self, form):
+        employee_id = self.request.POST.get("employee_id")
+        
+        form.instance.save(employee_id = employee_id, added_by=self.request.user.employee)
+        return super().form_valid(form)
+
+
+def update_employee_role(request):
+    added_by = request.user.employee
+    emp_id = request.POST.get("employee_id")
+    print(emp_id)
+    if request.method == "POST":
+        emp_hostel_alloc_form = HostelEmployeeAllocForm(request.POST)
+        if emp_hostel_alloc_form.is_valid():
+            role = emp_hostel_alloc_form.cleaned_data.get("role")
+            if added_by and emp_id:
+                emp = models.Employee.objects.get(employee_id=emp_id)
+                emp_hostel_alloc = models.HostelEmployeeAlloc.objects.filter(employee=emp).last()
+                utils.deactivate_role(emp_hostel_alloc)
+                new_role = models.HostelEmployeeAlloc(
+                    hostel=emp_hostel_alloc.hostel,
+                    employee=emp,
+                    role = role,
+                    active = True,
+                    added_by = added_by,
+                    timestamp = timezone.now(),
+                    comment = ""
+                )
+                new_role.save()
+                utils.update_emp_info(emp, emp_hostel_alloc.hostel.hostel_id)

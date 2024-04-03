@@ -2,11 +2,38 @@
 
 {% block content %}
     <h1>Employee List</h1>
-    {% if employees %}
-        {% for employee in employees %}
-            {{employee}}<br>
-        {% endfor %}
-    {% else %}
-        <div>No employee record found</div>
-    {% endif %}
+    <table class="table">
+        <thead>
+            <th>EMP. ID</th>
+            <th>NAME</th>
+            <th>PHONE</th>
+            <th>ASSIGNED ROLE</th>
+            <th>UPDATE ROLE</th>
+        </thead>
+        <tbody>
+            {% if employees %}
+                {% for employee in employees %}
+                    <tr>
+                        <td>{{employee.employee_id}}</td>
+                        <td>{{employee}}</td>
+                        <td>{{employee.phone}}</td>
+                        <td>
+                            {% comment %} {{employee.hostel}} {% endcomment %}
+                            {{hostel_alloc.role}}
+                        </td>
+                        <td>
+                            <form action="{% url 'update-role' %}" method="post">
+                                {%csrf_token%}
+                                <input type="hidden" name="employee_id" value="{{employee.employee_id}}">
+                                {{role_assign_form}}
+                                <input type="submit" value="Update">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr colspan="5">No employee found</tr>
+            {% endif %}
+        </tbody>
+    </table>
 {% endblock content %}
