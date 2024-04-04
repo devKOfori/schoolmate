@@ -5,7 +5,7 @@ from .models import (
     Room, AssignRoom, HostelVendor,
     RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty,
     DocumentVerificationPro, HostelEmployeeAlloc,
-    RoomType,
+    RoomType, Facility
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -122,3 +122,8 @@ class RoomForm(forms.ModelForm):
         widgets = {
             'room_number': forms.TextInput(attrs={"readonly": "readonly"}),
         }
+
+class HostelItemForm(forms.ModelForm):
+    class Meta:
+        model = Facility
+        exclude = ["hostel", "added_by"]

@@ -19,7 +19,9 @@ urlpatterns = [
     path("hostels/<str:hostel_id>/", views.hostel_detail, name="hostel-detail"),
     path("hostels/<str:hostel_id>/create-block/", views.create_block, name="create-block"),
     path("hostels/<str:hostel_id>/create-room/", views.create_room, name="create-room"),
+    path("hostels/<str:hostel_id>/create-item/", views.HostelItemCreateView.as_view(), name="create-hostel-item"),
     path("hostels/<str:hostel_id>/list-room/", views.room_list, name="list-room"),
+    path("hostels/<str:hostel_id>/list-items/", views.HostelItemListView.as_view(), name="list-hostel-items"),
 #======================================================================================================================
 #               OTHER URLS
 #======================================================================================================================

@@ -115,9 +115,11 @@ def create_hostel(request):
 def hostel_detail(request, hostel_id):
     hostel = get_object_or_404(Hostel, hostel_id=hostel_id)
     hostel_rooms = Room.objects.filter(hostel=hostel)
+    hostel_items = models.Facility.objects.filter(hostel = hostel)
     context = {
         "hostel": hostel,
-        "rooms": hostel_rooms
+        "rooms": hostel_rooms,
+        "items": hostel_items
     }
     return render(request, "housing/hostel_detail.html", context)
 
@@ -401,4 +403,41 @@ class RoomCreateView(generic.CreateView):
         initial = super().get_initial()
         initial["room_number"] = new_room_number
         return initial
+    
+class HostelItemListView(generic.ListView):
+    model = models.Facility
+    context_object_name = "hostel_items"
+    template_name = "housing/list_hostel_items.html"
+
+    def get_queryset(self):
+        employee = self.request.user.employee
+        emp_hostel_alloc = models.HostelEmployeeAlloc.objects.filter(
+            employee = employee
+        ).last()
+        queryset = super().get_queryset()
+        queryset.filter(hostel = emp_hostel_alloc.hostel)
+        return queryset
+
+class HostelItemCreateView(generic.CreateView):
+    model = models.Facility
+    form_class = forms.HostelItemForm
+    template_name = "housing/create_hostel_item.html"
+    # success_url = reverse("room-detail")
+
+    def form_valid(self, form):
+        employee = self.request.user.employee
+        hostel_id = self.kwargs.get("hostel_id")
+        if hostel_id:
+            hostel = Hostel.objects.get(hostel_id = hostel_id)
+        form.instance.hostel = hostel
+        form.instance.added_by = employee
+        return super().form_valid(form)
+    
+    def get_success_url(self) -> str:
+        hostel_id = self.kwargs.get("hostel_id")
+        frm_add_another = self.request.POST.get("add_another")
+        if frm_add_another:
+            return reverse("create-hostel-item", kwargs={"hostel_id": hostel_id})
+        return reverse("list-hostel-items", kwargs={"hostel_id": hostel_id})
+    
     

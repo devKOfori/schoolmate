@@ -1,0 +1,12 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<h1>Create New Item</h1>
+<hr>
+<form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    Add Another Item? <input type="checkbox" name="add_another" checked> <br>
+    <input type="submit" value="Save">
+</form>
+{% endblock content %}

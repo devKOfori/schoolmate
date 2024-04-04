@@ -180,7 +180,6 @@ class DocumentVerificationPro(models.Model):
                 badge.save()
         else:
             verify_property.property_verified = False
-            print(f"0000000000000000\n{badge}")
             verify_property.save()
             if badge:
                 badge.valid = False
@@ -219,6 +218,7 @@ class Block(models.Model):
     hostel = models.ForeignKey("Hostel", on_delete=models.CASCADE)
     block_id = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    room_cost_percentage = models.PositiveIntegerField(default=0)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
@@ -251,6 +251,7 @@ class Floor(models.Model):
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
     floor_id = models.CharField(max_length=255, unique=True, db_index=True)
+    room_cost_percentage = models.PositiveIntegerField(default=0)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
@@ -456,21 +457,25 @@ class OccupancyStatus(models.Model):
         return self.name
 
 class FacilityCategory(models.Model):
+    # e.g. Common User Item, Room User Item
     name = models.CharField(max_length=255)
 
     class Meta:
-        db_table = "facilitycategory"
+        db_table = "hostelitemcategory"
 
     def __str__(self):
         return self.name
 
 class Facility(models.Model):
+    hostel = models.ForeignKey(Hostel, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    facility_category = models.ForeignKey(FacilityCategory, on_delete=models.SET_NULL, null=True, blank=True)
+    facility_category = models.ForeignKey(FacilityCategory, on_delete=models.SET_DEFAULT, default=1)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-
+    room_cost_percentage = models.PositiveIntegerField(default=0)
+    added_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
+    
     class Meta:
-        db_table = "facility"
+        db_table = "hostelitem"
 
     def __str__(self):
         return self.name
@@ -480,6 +485,7 @@ class Room(models.Model):
     room_number = models.CharField(max_length=255, db_index=True, unique=True)
     block = models.ForeignKey(Block, on_delete=models.SET_NULL, null=True, blank=True)
     floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True)
+    area = models.DecimalField(max_digits=3, decimal_places=1, default=1.0)
     capacity = models.PositiveIntegerField(default=0)
     room_type = models.ForeignKey(RoomType, on_delete=models.SET_DEFAULT, default=1)
     room_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
