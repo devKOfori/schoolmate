@@ -434,7 +434,7 @@ def create_rooms_for_type(roomtype: RoomType, number_of_rooms: int):
         )
         room.save()
         no_of_rooms += 1
-        
+
 class RoomStatus(models.Model):
     # e.g., clean, under maintenance, needs repair
     name = models.CharField(max_length=255)
@@ -483,9 +483,9 @@ class Room(models.Model):
     capacity = models.PositiveIntegerField(default=0)
     room_type = models.ForeignKey(RoomType, on_delete=models.SET_DEFAULT, default=1)
     room_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
-    occupancy_status = models.ForeignKey(OccupancyStatus, on_delete=models.SET_NULL, null=True)
+    occupancy_status = models.ForeignKey(OccupancyStatus, on_delete=models.SET_DEFAULT, default=1)
     facilities = models.ManyToManyField(Facility, blank=True)
-    number_of_beds = models.PositiveBigIntegerField(default=1)
+    number_of_beds = models.PositiveBigIntegerField(default=0)
     availability_date = models.DateTimeField(default=timezone.now)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)

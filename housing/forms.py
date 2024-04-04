@@ -110,3 +110,15 @@ class RoomTypeForm(forms.ModelForm):
         exclude = [
             "hostel",
         ]
+
+class RoomForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        exclude = [
+            "hostel", "created_at", "created_by", "occupancy_status", 
+            "room_status", "facilities", "capacity", 
+            "number_of_beds"
+        ]
+        widgets = {
+            'room_number': forms.TextInput(attrs={"readonly": "readonly"}),
+        }

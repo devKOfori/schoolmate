@@ -1,4 +1,5 @@
 import datetime
+from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -247,6 +248,22 @@ def all_rooms(request):
     }
     return render(request, "housing/room_list.html", context)
 
+class MyHostelRoomListView(generic.ListView):
+    model = Room
+    context_object_name = "rooms"
+    template_name = "housing/room_list.html"
+
+    def get_queryset(self):
+        employee = self.request.user.employee
+        emp_hostel_alloc = models.HostelEmployeeAlloc.objects.filter(
+            employee=employee
+        ).last()
+        queryset =  super().get_queryset()
+        queryset.filter(
+            hostel = emp_hostel_alloc.hostel
+        )
+        return queryset
+    
 def assign_room(request):
     room_assignment_form = RoomAssignmentForm()
     context = {"room_assignment_form":room_assignment_form}
@@ -294,54 +311,6 @@ def my_hostel_requests(request):
     }
     return render(request, "housing/room_request_list.html", context)
          
-# def room_request_detail(request, request_id):
-#     room_request = get_object_or_404(RoomRequest, request_id=request_id)
-#     preferences = room_request.get_preferences()
-#     prefered_hostels = preferences.get("hostels")
-#     prefered_amenities = preferences.get("amenities")
-#     prefered_room_types = preferences.get("room_types")
-#     prefered_facilities = preferences.get("facilities")
-#     number_of_beds = preferences.get("number_of_beds")
-#     min_budget = preferences.get("min_budget")
-#     max_budget = preferences.get("max_budget")
-#     duration_of_stay = preferences.get("duration_of_stay")
-#     move_in_date_earliest = preferences.get("move_in_date_earliest")
-#     move_in_date_latest = preferences.get("move_in_date_latest")
-
-#     preferrence_filters = Q()
-#     hostels_filter = Q()
-
-#     if prefered_hostels:
-#         hostels = Hostel.objects.filter(name__in=prefered_hostels)
-#         hostel_rooms = Room.objects.filter(Q(hostel__in=hostels))
-#         hostels_filter &= Q(preferred_hostels__name__in=prefered_hostels)
-#     if prefered_amenities:
-#         preferrence_filters &= Q(preferred_amenities__name__in=prefered_amenities)
-#     if prefered_room_types:
-#         preferrence_filters &= Q(preferred_room_types__name__in=prefered_room_types)
-#     if prefered_facilities:
-#         preferrence_filters &= Q(preferred_facilities__name__in=prefered_facilities)
-#     if number_of_beds:
-#         preferrence_filters &= Q(number_of_beds_required=number_of_beds)
-#     if min_budget:
-#         preferrence_filters &= Q(min_budget=min_budget)
-#     if max_budget:
-#         preferrence_filters &= Q(max_budget=max_budget)
-#     if duration_of_stay:
-#         preferrence_filters &= Q(duration_of_stay=duration_of_stay)
-#     if move_in_date_earliest:
-#         preferrence_filters &= Q(move_in_date_earliest=move_in_date_earliest)
-#     if move_in_date_latest:
-#         preferrence_filters &= Q(move_in_date_latest=move_in_date_latest)
-    
-#     available_rooms = Room.objects.filter(preferrence_filters)
-    
-#     context = {
-#         "room_request": room_request, 
-#         "available_rooms": available_rooms
-#     }
-#     return render(request, "housing/room_request_detail.html", context)
-
 class HostelEmployeeAllocCreateView(generic.CreateView):
     model = models.HostelEmployeeAlloc
     form_class = HostelEmployeeAllocForm
@@ -404,4 +373,32 @@ class RoomTypeCreateView(generic.CreateView):
         if frm_add_another:
             return reverse("create-roomtype")
         return reverse("my-employee")
-        
+
+class RoomCreateView(generic.CreateView):
+    model = Room
+    template_name = "housing/create_room.html"
+    form_class = forms.RoomForm
+    
+    def get_success_url(self) -> str:
+        return reverse_lazy("room-detail", kwargs={"room_number": self.object.room_number})
+    
+    def form_valid(self, form):
+        employee = self.request.user.employee
+        emp_hostel_alloc = models.HostelEmployeeAlloc.objects.filter(
+            employee=employee
+        ).last()
+        assigned_hostel = emp_hostel_alloc.hostel
+        form.instance.hostel = assigned_hostel
+        form.instance.created_at = datetime.datetime.now()
+        form.instance.created_by = self.request.user.employee
+        return super().form_valid(form)
+    
+    def get_initial(self):
+        last_room = Room.objects.last()
+        last_id = int(last_room.room_number[2:])
+        new_id = last_id + 1
+        new_room_number = "RM" + str(new_id).zfill(7)
+        initial = super().get_initial()
+        initial["room_number"] = new_room_number
+        return initial
+    

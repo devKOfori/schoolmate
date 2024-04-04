@@ -24,7 +24,9 @@ urlpatterns = [
 #               OTHER URLS
 #======================================================================================================================
     path("add-roomtype/", views.RoomTypeCreateView.as_view(), name="create-roomtype"),
+    path("rooms/my-rooms/", views.MyHostelRoomListView.as_view(), name="my-rooms"),
     path("rooms/all/", views.all_rooms, name="all-rooms"),
+    path("rooms/create-room/", views.RoomCreateView.as_view(), name="create-room"),
     path("rooms/requests/create-request/", views.request_room, name="create-request"),
     path("rooms/requests/all/", views.all_room_requests, name="all-room-requests"),
     path("rooms/requests/my-hostel-requests/", views.my_hostel_requests, name="my-hostel-requests"),
