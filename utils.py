@@ -10,6 +10,7 @@ def update_emp_info(employee, hostel_id):
 def deactivate_role(emp_hostel_alloc):
     emp_hostel_alloc.active = False
     emp_hostel_alloc.role_end_date = datetime.now()
+    return emp_hostel_alloc
     # emp_hostel_alloc.save() 
 
 def assign_new_role(hostel, employee, added_by, role):
