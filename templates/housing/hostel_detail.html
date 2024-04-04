@@ -4,12 +4,64 @@
     <h1>{{hostel}}</h1>
     <a href="{% url 'create-block' hostel.hostel_id %}">Add Block</a>
     <a href="{% url 'create-room' hostel.hostel_id %}">Add Room</a>
-    {% if rooms %}
-        {% for room in rooms %}
-            {{room.room_number}}
-        {% endfor %}
-    {% else %}
-        <div>No rooms created for this hostel</div>
-    {% endif %}
+    <table name="rooms-table" class="table">
+        <thead>
+            <th>&nbsp;</th>
+            <th>Room #</th>
+            <th>Block</th>
+            <th>Floor</th>
+            <th>Room Type</th>
+            <th>Room Status</th>
+            <th>Occupancy Status</th>
+            <th>&nbsp;</th>
+        </thead>
+        <tbody>
+            {% if rooms %}
+                {% for room in rooms %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{room.room_number}}</td>
+                        <td>{{room.block}}</td>
+                        <td>{{room.floor}}</td>
+                        <td>{{room.room_type}}</td>
+                        <td>{{room.room_status}}</td>
+                        <td>{{room.occupancy_status}}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr colspan="100">No rooms created for this hostel</tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <h1>Hostel Items List</h1>
+    <hr>
+    <table name="items-table" class="table">
+        <thead>
+            <th>&nbsp;</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Room Cost %</th>
+            <th>Added By</th>
+        </thead>
+        <tbody>
+            {% if items %}
+                {% for item in items %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.facility_category}}</td>
+                        <td>{{item.room_cost_percentage}}</td>
+                        <td>{{item.added_by}}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr colspan="100">No item has been added for this hostel</tr>
+            {% endif %}
+        </tbody>
+    </table>
     <div><a href="{% url 'verify-property' hostel.hostel_id %}">Verify Hostel</a></div>
+    <div><a href="{% url 'create-hostel-item' hostel.hostel_id %}">Add new Hostel Item</a></div>
+    <div><a href="{% url 'list-hostel-items' hostel.hostel_id %}">View Hostel Items</a></div>
 {% endblock content %}
