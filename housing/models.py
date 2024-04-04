@@ -280,10 +280,11 @@ class HostelEmployeeAlloc(models.Model):
     added_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
     active = models.BooleanField(default=True)
     comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "hostelemployeealloc"
-        unique_together = ("hostel", "role", "employee")
+        # unique_together = ("hostel", "role", "employee", "active")
 
     def __str__(self):
         return f"{self.employee} - {self.hostel} - {self.role}"
@@ -291,7 +292,7 @@ class HostelEmployeeAlloc(models.Model):
     def save(self, *args, **kwargs):
         employee_id = getattr(self, "upd_employee_id", None)
         added_by = getattr(self, "upd_added_by", None)
-        # print(f"{employee_id} - {added_by}")
+        update_emp_info = False
         if employee_id and added_by:
             emp = Employee.objects.filter(
                 employee_id = employee_id
@@ -302,7 +303,7 @@ class HostelEmployeeAlloc(models.Model):
             emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(
                 employee=emp
             ).last()
-            if emp_hostel_alloc:
+            if emp_hostel_alloc and emp_hostel_alloc.role != self.role:
                 self.hostel = emp_hostel_alloc.hostel
                 self.hostel_code = emp_hostel_alloc.hostel_code
                 self.employee = emp_hostel_alloc.employee
@@ -312,6 +313,8 @@ class HostelEmployeeAlloc(models.Model):
                 self.added_by = added_by
                 self.active = True
                 self.comment = ""
+
+                update_emp_info = True
                 super().save(*args, **kwargs)
             else:
                 self.hostel_code = self.hostel.hostel_id
@@ -320,12 +323,12 @@ class HostelEmployeeAlloc(models.Model):
         except ObjectDoesNotExist:
             pass
         finally:
-            print(f"999999999999999999999 {emp}")
-            utils.update_emp_info(
-                employee=emp,
-                hostel_id=self.hostel.hostel_id
-            )   
-            
+            if update_emp_info:
+                utils.update_emp_info(
+                    employee=emp,
+                    hostel_id=self.hostel.hostel_id
+                )   
+                
      
 class Hostel(models.Model):
     name = models.CharField(max_length=255, db_index=True)

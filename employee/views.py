@@ -17,7 +17,6 @@ def my_employee(request):
     employees = Employee.objects.filter(created_by=me)
     for emp in employees:
         hostel_alloc = emp.hostel_alloc.order_by("-timestamp").first()
-        print(hostel_alloc)
         if hostel_alloc:
             # emp.hostel = hostel_alloc.hostel
             emp.hostel_role = hostel_alloc.role
