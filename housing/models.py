@@ -403,7 +403,12 @@ class HostelPhotos(models.Model):
     
 class RoomType(models.Model):
     # e.g., single, double, shared, dormitory
+    hostel = models.ForeignKey(
+        Hostel, on_delete = models.CASCADE
+    )
     name = models.CharField(max_length=255)
+    number_of_rooms = models.PositiveIntegerField(default=1)
+    room_cost_percentage = models.PositiveIntegerField(default=0)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
