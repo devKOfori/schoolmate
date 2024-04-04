@@ -1,4 +1,6 @@
 import datetime
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import (
@@ -378,3 +380,28 @@ def update_employee_role(request):
                 )
                 new_role.save()
                 utils.update_emp_info(emp, emp_hostel_alloc.hostel.hostel_id)
+
+
+class RoomTypeCreateView(generic.CreateView):
+    model = models.RoomType
+    form_class = forms.RoomTypeForm
+    template_name = "housing/create_room_type.html"
+    # success_url = reverse_lazy("my-employee")
+
+    def form_valid(self, form):
+        employee = self.request.user.employee
+        assigned_hostel = models.HostelEmployeeAlloc.objects.filter(
+            employee = employee
+        ).last()
+        form.instance.hostel = assigned_hostel.hostel
+        create_rooms = self.request.POST.get("create_rooms")
+        if create_rooms:
+            setattr(form.instance, "create_rooms", True)
+        return super().form_valid(form)
+    
+    def get_success_url(self) -> str:
+        frm_add_another = self.request.POST.get("add_another")
+        if frm_add_another:
+            return reverse("create-roomtype")
+        return reverse("my-employee")
+        

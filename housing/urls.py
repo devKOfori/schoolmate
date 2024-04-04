@@ -23,6 +23,7 @@ urlpatterns = [
 #======================================================================================================================
 #               OTHER URLS
 #======================================================================================================================
+    path("add-roomtype/", views.RoomTypeCreateView.as_view(), name="create-roomtype"),
     path("rooms/all/", views.all_rooms, name="all-rooms"),
     path("rooms/requests/create-request/", views.request_room, name="create-request"),
     path("rooms/requests/all/", views.all_room_requests, name="all-room-requests"),

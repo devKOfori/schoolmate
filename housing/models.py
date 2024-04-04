@@ -417,6 +417,24 @@ class RoomType(models.Model):
     def __str__(self):
         return self.name
     
+    def save(self,*args, **kwargs):
+        super().save(*args, **kwargs)
+        create_rooms = getattr(self, "create_rooms", None)
+        if create_rooms:
+            create_rooms_for_type(self, self.number_of_rooms)
+
+def create_rooms_for_type(roomtype: RoomType, number_of_rooms: int):
+    no_of_rooms = Room.objects.count()
+    
+    for _ in range(number_of_rooms):
+        room = Room(
+            hostel = roomtype.hostel,
+            room_number = "RM" + str(no_of_rooms + 1).zfill(7),
+            room_type = roomtype
+        )
+        room.save()
+        no_of_rooms += 1
+        
 class RoomStatus(models.Model):
     # e.g., clean, under maintenance, needs repair
     name = models.CharField(max_length=255)
