@@ -320,11 +320,19 @@ class HostelEmployeeAllocCreateView(generic.CreateView):
     success_url = reverse_lazy("my-employee")
 
     def form_valid(self, form):
+        logged_in_emp = self.request.user.employee
+        logged_in_emp_hostel_alloc = models.HostelEmployeeAlloc.objects.filter(
+            employee = logged_in_emp
+        ).last()
+        print(logged_in_emp_hostel_alloc)
+        logged_in_emp_hostel = logged_in_emp_hostel_alloc.hostel
+
         employee_id = self.request.POST.get("upd_employee_id")
         form_type = self.request.POST.get("form_type")
         # if form_type:
         setattr(form.instance, "upd_employee_id", employee_id)
         setattr(form.instance, "upd_added_by", self.request.user.employee)
+        setattr(form.instance, "upd_hostel", logged_in_emp_hostel)
         return super().form_valid(form)
 
 

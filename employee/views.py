@@ -15,11 +15,12 @@ def list_employee(request):
 def my_employee(request):
     me = request.user.employee
     employees = Employee.objects.filter(created_by=me)
-    for emp in employees:
-        hostel_alloc = emp.hostel_alloc.order_by("-timestamp").first()
-        if hostel_alloc:
-            # emp.hostel = hostel_alloc.hostel
-            emp.hostel_role = hostel_alloc.role
+    if employees:
+        for emp in employees:
+            hostel_alloc = emp.hostel_alloc.order_by("-timestamp").first()
+            if hostel_alloc:
+                # emp.hostel = hostel_alloc.hostel
+                emp.hostel_role = hostel_alloc.role
     role_assign_form = HostelEmployeeAllocForm()
     context = {
         "employees": employees,

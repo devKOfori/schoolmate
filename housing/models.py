@@ -291,19 +291,29 @@ class HostelEmployeeAlloc(models.Model):
         return f"{self.employee} - {self.hostel} - {self.role}"
 
     def save(self, *args, **kwargs):
-        employee_id = getattr(self, "upd_employee_id", None)
-        added_by = getattr(self, "upd_added_by", None)
+        upd_employee_id = getattr(self, "upd_employee_id", None)
+        upd_added_by = getattr(self, "upd_added_by", None)
+        upd_hostel = getattr(self, "upd_hostel", None)
         update_emp_info = False
-        if employee_id and added_by:
+        if upd_employee_id and upd_added_by and upd_hostel:
             emp = Employee.objects.filter(
-                employee_id = employee_id
+                employee_id = upd_employee_id
             ).last()
+            self.added_by = upd_added_by
+            q_hostel = upd_hostel
         else:
+            q_hostel = self.hostel
             emp = self.employee
+            print(f"//////////{emp}")
+            print(f"//////////{self.role}")
+            print(f"//////////{self.added_by}")
         try:
+            filter_query = Q(employee=emp) & Q(hostel=q_hostel)
             emp_hostel_alloc = HostelEmployeeAlloc.objects.filter(
-                employee=emp
+                # employee=emp
+                filter_query
             ).last()
+            print(f"nnnnnnnnnnnnnnnnnnn{emp_hostel_alloc}")
             if emp_hostel_alloc and emp_hostel_alloc.role != self.role:
                 self.hostel = emp_hostel_alloc.hostel
                 self.hostel_code = emp_hostel_alloc.hostel_code
@@ -311,13 +321,14 @@ class HostelEmployeeAlloc(models.Model):
                 self.employee_code = emp_hostel_alloc.employee_code
                 self.timestamp = datetime.now()
                 self.role_end_date = None
-                self.added_by = added_by
+                # self.added_by = upd_added_by
                 self.active = True
                 self.comment = ""
 
                 update_emp_info = True
                 super().save(*args, **kwargs)
             else:
+                print(f"000000000000{self}")
                 self.hostel_code = self.hostel.hostel_id
                 self.employee_code = self.employee.employee_id
                 super().save(*args, **kwargs)
@@ -350,6 +361,7 @@ class Hostel(models.Model):
 
     
     def save(self, *args, **kwargs):
+        print(self.created_by)
         super().save(*args, **kwargs)
         block = None
         manager = HostelRoles.objects.filter(name="Manager").first()
@@ -357,9 +369,13 @@ class Hostel(models.Model):
             block = Block.objects.create(hostel = self, block_id = self.hostel_id, name = self.name)
         if not Floor.objects.filter(floor_id=self.hostel_id).exists():
             Floor.objects.create(block=block, name=self.name, floor_id=self.hostel_id)
+        print(f"***********{self.hostel_id}")
+        print(f"***********{self.created_by}")
+        print(f"***********{self.created_by.employee_id}")
+        print(f"***********{self.hostel_id}")
         HostelEmployeeAlloc.objects.create(
             hostel = self,
-            hoste_code = self.hostel_id,
+            hostel_code = self.hostel_id,
             employee = self.created_by,
             employee_code = self.created_by.employee_id,
             role = manager,
@@ -490,7 +506,7 @@ class Room(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.SET_DEFAULT, default=1)
     room_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
     occupancy_status = models.ForeignKey(OccupancyStatus, on_delete=models.SET_DEFAULT, default=1)
-    facilities = models.ManyToManyField(Facility, blank=True)
+    facilities = models.ManyToManyField(Facility, blank=True, through="RoomItemAlloc")
     number_of_beds = models.PositiveBigIntegerField(default=0)
     availability_date = models.DateTimeField(default=timezone.now)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -502,6 +518,17 @@ class Room(models.Model):
 
     def __str__(self):
         return self.room_number
+
+class RoomItemAlloc(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    item = models.ForeignKey(Facility, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    assigned_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.room} - {self.item}"
+    
     
 class HostelTenant(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
