@@ -417,9 +417,17 @@ class HostelPhotos(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+class RoomCategory(models.Model):
+    # e.g., single, shared, family
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.name    
+
 class RoomType(models.Model):
-    # e.g., single, double, shared, dormitory
+    # e.g., 1-in-1, 2-in-1, 3-in-1, etc
     hostel = models.ForeignKey(
         Hostel, on_delete = models.CASCADE
     )
@@ -503,10 +511,11 @@ class Room(models.Model):
     floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True)
     area = models.DecimalField(max_digits=3, decimal_places=1, default=1.0)
     capacity = models.PositiveIntegerField(default=0)
+    room_category = models.ForeignKey(RoomCategory, on_delete=models.SET_NULL, null=True)
     room_type = models.ForeignKey(RoomType, on_delete=models.SET_DEFAULT, default=1)
     room_status = models.ForeignKey(RoomStatus, on_delete=models.SET_DEFAULT, default=1)
     occupancy_status = models.ForeignKey(OccupancyStatus, on_delete=models.SET_DEFAULT, default=1)
-    facilities = models.ManyToManyField(Facility, blank=True, through="RoomItemAlloc")
+    facilities = models.ManyToManyField(Facility, blank=True)
     number_of_beds = models.PositiveBigIntegerField(default=0)
     availability_date = models.DateTimeField(default=timezone.now)
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -538,6 +547,8 @@ class HostelTenant(models.Model):
     phone_number = models.CharField(max_length=255)
     email = models.EmailField()
     address = models.CharField(max_length=255, blank=True)
+    created_by = models.ForeignKey(Employee, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "hosteltenant"
@@ -758,3 +769,26 @@ class AssignRoom(models.Model):
         self.assignment_status = update_type
         self.save()
 
+class HostelApplication(models.Model):
+    application_id = models.CharField(max_length=255, unique=True, db_index=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    date_of_birth = models.DateField()
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True)
+    street_address = models.CharField(max_length=255)
+    postal_address = models.CharField(max_length=255)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    nationality = models.ForeignKey(Nationality, on_delete=models.SET_NULL, null=True)
+    phone_number = models.CharField(max_length=255)
+    email_address = models.EmailField(max_length=254)
+    hostels = models.ManyToManyField(Hostel)
+    rooms = models.ManyToManyField(Room)
+    room_types = models.ManyToManyField(RoomType)
+    min_budget = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    max_budget = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    student = models.BooleanField()
+    rent_begin = models.DateField("Move-in Date", default=timezone.now, null=True)
+    application_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.application_id

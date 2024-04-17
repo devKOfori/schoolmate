@@ -25,11 +25,13 @@ from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-
+from school import models as schmodels
 from django.views import generic
 # Create your views here.
 import utils
 from django.utils import timezone
+from accounts import models as account_models
+
 def register_tenant(request):
     user_form = UserCreationForm(prefix="user")
     tenant_form = TenantCreationForm(prefix="tenant")
@@ -133,13 +135,33 @@ def my_hostels(request):
     return render(request, "housing/hostel_list.html", context=context)
 
 def hostel_list(request):
+    cities = schmodels.City.objects.all()
+    print(cities)
     hostels = Hostel.objects.all()
     context = {
-        "hostels": hostels
+        "hostels": hostels,
+        "cities": cities
     }
     return render(request, "housing/hostel_list.html", context=context)
 
-
+def search(request):
+    hostels = Hostel.objects.all()
+    cities = schmodels.City.objects.all()
+    hostel_name = request.GET.get("hostel_name")
+    room_category = request.GET.get("room_category")
+    city = request.GET.get("city")
+    if hostel_name:
+        hostels = hostels.filter(name__icontains=hostel_name)
+    if room_category:
+        # print(room_category)
+        hostels = hostels.filter(room__room_category__name=room_category).distinct()
+    if city:
+        hostels = hostels.filter(hosteladdress__city__name=city)
+    context = {
+        "hostels": hostels,
+        "cities": cities
+    }
+    return render(request, "housing/hostel_list.html", context=context)
 #======================================================================================================================
 #               PROFILE VERIFICATION
 #======================================================================================================================
@@ -448,4 +470,29 @@ class HostelItemCreateView(generic.CreateView):
             return reverse("create-hostel-item", kwargs={"hostel_id": hostel_id})
         return reverse("list-hostel-items", kwargs={"hostel_id": hostel_id})
     
+class TenantCreateView(generic.CreateView):
+    model = models.HostelTenant
+    form_class = forms.TenantForm
+    template_name = "housing/register_tenant.html"
+    success_url = reverse_lazy("my-hostels")
+
+    def form_valid(self, form):
+        active_user = self.request.user.employee
+        email = form.cleaned_data.get("email")
+        first_name = form.cleaned_data.get("first_name")
+        last_name = form.cleaned_data.get("last_name")
+        password = form.cleaned_data.get("password")
+        user = account_models.CustomUser.objects.create_user(
+            first_name=first_name, last_name=last_name, 
+            email=email, username=email, password=password, 
+            is_superuser=False, is_staff=False
+        )
+        form.instance.user = user
+        form.instance.created_by = active_user
+        form.instance.created_at = datetime.datetime.now()
+        return super().form_valid(form)
     
+class TenantListView(generic.ListView):
+    model = models.HostelTenant
+    context_object_name = "tenants"
+    template_name = "housing/list_tenants.html"

@@ -2,6 +2,8 @@ from django.urls import path
 from .import views
 
 urlpatterns = [
+    path("tenant/list-tenants", views.TenantListView.as_view(), name="list-tenants"),
+    path("tenant/register-tenant", views.TenantCreateView.as_view(), name="register-tenant"),
 #======================================================================================================================
 #               VENDOR URLS
 #======================================================================================================================
@@ -13,6 +15,7 @@ urlpatterns = [
 #               HOSTEL URLS
 #======================================================================================================================
     path("hostels/all", views.hostel_list, name="hostel-list"),
+    path("hostels/search", views.search, name="search-hostel"),
     path("hostels/my-hostels/", views.my_hostels, name="my-hostels"),
     path("register-tenant", views.register_tenant, name="register-tenant"),
     path("hostels/create-hostel/", views.create_hostel, name="create-hostel"),

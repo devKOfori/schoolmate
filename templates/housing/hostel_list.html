@@ -2,14 +2,46 @@
 
 {% block content %}
     <h1>Hostel Listings Page</h1>
-    {% if hostels %}
-        {% for hostel in hostels %}
-            <a href="{% url 'hostel-detail' hostel.hostel_id %}">
-                {{hostel.name}}
-            </a>
-            <hr>
-        {% endfor %}
-    {% else %}
-        <span>No Hostels available</span>
-    {% endif %}
+
+    <form action="{% url 'search-hostel' %}" method="get">
+        Name of Hostel<input type="text" name="hostel_name" id="hostel_name"><br>
+        Choose Room Categories <br>
+        <input type="radio" name="room_category" id="single" value="Single">Single Room
+        <input type="radio" name="room_category" id="shared" value="Shared">Shared Room
+        <br>Min. Budget<input type="number" name="min_budget" id="min_budget"> Max. Budget<input type="number" name="min_budget" id="min_budget">
+        <br>City: <select name="city" id="city">
+            <option value="">-----------</option>
+            {% for city in cities %}
+                <option value="{{city.name}}">{{city.name}}</option>
+            {% endfor %}
+        </select>
+        <br><input type="submit" value="Search">
+    </form>
+    <div class="row">
+        {% if hostels %}
+            {% for hostel in hostels %}
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'hostel-detail' hostel.hostel_id %}">
+                                    {{hostel.name}}
+                                </a>
+                            </h5>
+                            <p class="card-text">
+                                {{hostel.location}} | {{hostel.phone}} | {{hostel.email}}
+                            </p>
+                            <a class="btn btn-dark" href="{% url 'hostel-detail' hostel.hostel_id %}">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- <hr> -->
+            {% endfor %}
+        {% else %}
+            <span>No Hostels available</span>
+        {% endif %}
+    </div>
 {% endblock content %}
