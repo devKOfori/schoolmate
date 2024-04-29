@@ -20,7 +20,7 @@
     <div class="row">
         {% if hostels %}
             {% for hostel in hostels %}
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card">
                         <img src="..." class="card-img-top" alt="...">
                         <div class="card-body">
@@ -32,6 +32,8 @@
                             <p class="card-text">
                                 {{hostel.location}} | {{hostel.phone}} | {{hostel.email}}
                             </p>
+                            <input type="checkbox" class="btn-check" id="btn-check-{{hostel.hostel_id}}" autocomplete="off">
+                            <label class="btn btn-outline-dark" for="btn-check-{{hostel.hostel_id}}">Add to Application</label>
                             <a class="btn btn-dark" href="{% url 'hostel-detail' hostel.hostel_id %}">
                                 Read More
                             </a>

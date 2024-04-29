@@ -1,0 +1,31 @@
+{% extends "partials/base.html" %}
+
+<h1>Tenants List</h1>
+<hr>
+
+<table class="table">
+<thead>
+    <th>&nbsp;</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Phone #</th>
+    <th>Gender</th>
+</thead>
+<tbody>
+    {% if Tenants %}
+        {% for Tenant in Tenants %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{tenant.first_name + " " + tenant.last_name}}</td>
+                <td>{{tenant.email}}</td>
+                <td>{{tenant.phone_number}}</td>
+                <td>{{tenant.gender}}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+            <tr>
+                <td colspan="100">No Tenant Record found</td>
+            </tr>
+    {% endif %}
+</tbody>
+</table>

@@ -115,13 +115,15 @@ def create_hostel(request):
         return render(request, "housing/create_hostel.html", {"hostel_form": hostel_form, "address_form": hostel_address_form})
     
 def hostel_detail(request, hostel_id):
+    hostel_application_form = forms.HostelApplicationForm
     hostel = get_object_or_404(Hostel, hostel_id=hostel_id)
     hostel_rooms = Room.objects.filter(hostel=hostel)
     hostel_items = models.Facility.objects.filter(hostel = hostel)
     context = {
         "hostel": hostel,
         "rooms": hostel_rooms,
-        "items": hostel_items
+        "items": hostel_items,
+        "hostel_application_form": hostel_application_form
     }
     return render(request, "housing/hostel_detail.html", context)
 
@@ -496,3 +498,32 @@ class TenantListView(generic.ListView):
     model = models.HostelTenant
     context_object_name = "tenants"
     template_name = "housing/list_tenants.html"
+
+class HostelApplicationCreateView(generic.CreateView):
+    model = models.HostelApplication
+    form_class = forms.HostelApplicationForm
+    template_name = "housing/hostel_application.html"
+    # success_url = reverse_lazy("hostel-application-detail")
+
+    def form_valid(self, form):
+        hostel_application = form.save()
+        hostels = form.cleaned_data.get("hostels")
+        rooms = form.cleaned_data.get("rooms")
+        room_types = form.cleaned_data.get("room_types")
+        if hostels:
+            hostel_application.hostels.set(hostels)
+        if rooms:
+            hostel_application.rooms.set(rooms)
+        if room_types:
+            hostel_application.room_types.set(room_types)
+        return super().form_valid(form)
+    
+    def get_success_url(self) -> str:
+        application_id = self.object.application_id
+        return reverse_lazy("hostel-application-detail", kwargs={"application_id": application_id})
+
+class HostelApplicationDetailView(generic.DetailView):
+    model = models.HostelApplication
+    context_object_name = "hostelapplication"
+    template_name = "housing/hostel_application_detail.html"
+    slug_field = "application_id"

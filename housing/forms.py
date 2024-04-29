@@ -5,7 +5,7 @@ from .models import (
     Room, AssignRoom, HostelVendor,
     RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty,
     DocumentVerificationPro, HostelEmployeeAlloc,
-    RoomType, Facility
+    RoomType, Facility, HostelApplication
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -127,3 +127,20 @@ class HostelItemForm(forms.ModelForm):
     class Meta:
         model = Facility
         exclude = ["hostel", "added_by"]
+
+class TenantForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=255, required=True)
+    last_name = forms.CharField(max_length=255, required=True)
+    password = forms.CharField(widget=forms.PasswordInput())
+    
+    class Meta:
+        model = HostelTenant
+        exclude = ["user", "created_by", "created_at"]
+
+class HostelApplicationForm(forms.ModelForm):
+    class Meta:
+        model = HostelApplication
+        exclude = [
+            "hostels", "room_types", 
+            "min_budget", "max_budget"
+        ]

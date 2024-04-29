@@ -790,5 +790,10 @@ class HostelApplication(models.Model):
     rent_begin = models.DateField("Move-in Date", default=timezone.now, null=True)
     application_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = "hostelapplication"
+        verbose_name = "Hostel Application"
+        verbose_name_plural = "Hostel Applications"
+
     def __str__(self):
         return self.application_id

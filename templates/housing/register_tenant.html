@@ -1,0 +1,13 @@
+{% extends "partials/base.html" %}
+
+<h1>Register Tenant</h1>
+<hr>
+
+{% block content %}
+    <form method="post">
+       {% csrf_token %}
+       {{form.as_p}}
+       <input type="submit" value="Save">
+    </form>
+
+{% endblock content %}

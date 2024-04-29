@@ -64,4 +64,10 @@
     <div><a href="{% url 'verify-property' hostel.hostel_id %}">Verify Hostel</a></div>
     <div><a href="{% url 'create-hostel-item' hostel.hostel_id %}">Add new Hostel Item</a></div>
     <div><a href="{% url 'list-hostel-items' hostel.hostel_id %}">View Hostel Items</a></div>
+
+    <form method="post" action="{% url 'hostel-application' hostel.hostel_id %}">
+        {% csrf_token %}
+        {{hostel_application_form.as_p}}
+        <input type="submit" value="Save">
+    </form>
 {% endblock content %}
