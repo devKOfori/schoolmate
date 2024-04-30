@@ -75,9 +75,12 @@ function handleHostelSelection(event) {
         addSelectedHostel(hostelId, hostelName, hostelDetails);
         // console.log(hostelDetails);
     } else {
+        btnLabel.classList.remove("btn-success");
+        btnLabel.classList.add("btn-outline-dark");
+        btnLabel.textContent = "Add to Application";
         let selectedHostel = document.querySelector('#selectedHostelsList');
-        let cardEle = btn.closest("col-md-3");
-        console.log(selectedHostel);
+        let cardEle = selectedHostel.querySelector("#" + btn.id);
+        cardEle = cardEle.parentNode.parentNode.parentNode;
         if (cardEle) {
             cardEle.remove();
         }
