@@ -11,3 +11,6 @@ def dashboard(request):
         return render(request, "school/dashboard.html", {"employee": employee})
     except:
         return redirect(reverse("login"))
+    
+def index(request):
+    return render(request, "school/index.html")

@@ -1,3 +1,110 @@
 .error-message {
     color: red;
 }
+
+.logo {
+    display: flex;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 5px;
+    height: 55px;
+    border-bottom: 2px solid black;
+    box-shadow: 0px 2px 4px rgba(255, 255, 255, 0.2);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0 20px;
+}
+
+#logo-image {
+    font-size: 1rem;
+}
+
+
+.logo-text {
+    font-family: "Dancing Script", cursive;
+    font-optical-sizing: auto;
+    font-size: 2.4rem;
+    font-weight: 700;
+    font-style: normal;
+}
+
+a {
+    text-decoration: none;
+}
+
+.school-title {
+    color: rgb(94, 94, 219) !important;
+}
+
+.mate-title {
+    color: black !important;
+}
+
+.nav-items {
+    display: flex;
+}
+
+.nav-menu-items {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list-item {
+    margin-right: 30px; 
+    padding: 0 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.nav-list-item:hover {
+    background-color: black;
+    color: white;
+    transition: 0.1s;
+}
+
+
+/* Index Page Styles */
+.page-banner {
+    height: 100vh;
+    width: 100%;
+    /* background-color: slategray; */
+    background-image: url("../images/banner_image.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+
+}
+
+.banner-layer {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.banner-call-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: absolute;
+    z-index: 1;
+}
+
+#btn-banner-call {
+    background: white;
+    border: 2px solid black;
+    border-radius: 100px;
+    padding: 10px 30px;
+    opacity: 0.7;
+}
