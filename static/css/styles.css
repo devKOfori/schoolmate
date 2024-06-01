@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+:root {
+    /* --faded-black: rgb(55, 54, 54); */
+    --faded-black: rgb(0, 0, 0);
+    --shadow: #636363;
+    --dark-blue: rgb(15, 15, 158);
+    /* --bg-primary: hsl(240, 97%, 12%); */
+    /* --bg-primary: hsl(240, 100%, 7%); */
+    --bg-primary: hsl(240, 100%, 4%);
+    --border-color: hsl(0, 0%, 46%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+}
+
+.navbar {
+    display: flex;
+    background-color: var(--bg-primary);
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    box-shadow: 0px 2px 8px var(--shadow);
+}
+
+.hide-menu {
+    display: none;
+}
+
+ul {
+    list-style-type: none;
+    /* color: white; */
+}
+
+.navbar-menu-list {
+    display: flex;
+
+}
+
+.list-item {
+    padding: 10px;
+    margin: 0 20px;
+    font-weight: 700;
+}
+
+ul a {
+    color: white;
+}
+
+ul a:hover {
+    border-bottom: 2px solid white; 
+}
+
+.logo h2 {
+    /* font-family: "Dancing Script", cursive; */
+    font-size: 2.0rem;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+}
+
+.login-container {
+    width: 40%;
+    /* margin-top: 10px; */
+    height: calc(100vh - 120px);
+    margin: 30px auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-primary);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    
+}
+
+.login-form-container {
+    text-align: center;
+    padding: 20px;
+    width: 100%; 
+}
+
+.login-body {
+    width: 50%;
+    height: 100%;
+    margin: 120px auto 0;
+    /* text-align: center; */
+}
+
+.login-title {
+    color: white;
+    /* font-size: 1.8rem; */
+    margin-top: 20px;
+}
+
+.login-form {
+    margin-top: 20px;
+}
+
+.login-form .form-control {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: white;
+    width: 100%;
+}
+
+.login-form .form-button {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px;
+    background-color: white;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    color: black;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: white;
+    padding: 10px;
+    width: 100%;
+    display: block;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    text-align: center;
+
+}
+
+.forgot-password:hover {
+    cursor: pointer;
+    /* text-decoration: underline; */
+    background-color: var(--border-color);
+}
+
+input:valid {
+    background-color: var(--bg-primary);
+}
+
+input::placeholder {
+    font-weight: bold;
+}
+
+/* Utility Classes */
+.form-group {
+    margin-bottom: 15px;  
+}
+
+.login-form .form-label {
+    color: white;
+}
+
+.form-label {
+    padding-right: 5px;
+}
+
+.form-control {
+    padding: 15px 5px;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.sign-up {
+    margin-top: 50px;
+    text-align: left;
+    color: var(--border-color);
+}
+
+.sign-up-text {
+    color: rgb(98, 98, 238);
+    padding: 0 3px;
+    cursor: pointer;
+}
+
+.sign-up-text:hover {
+    /* color: var(--border-color); */
+    text-decoration: underline;
+}

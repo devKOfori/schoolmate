@@ -24,7 +24,7 @@ def user_login(request):
                 return render(request, "authentication/login.html", {"form": form, "error_message": "Invalid email or password"})
     else:
         form = LoginForm()
-    return render(request, 'authentication/login.html', {'form': form})
+    return render(request, 'authentication/login.html', {'form': form, "hide_menu":True})
 
 def user_logout(request):
     logout(request)

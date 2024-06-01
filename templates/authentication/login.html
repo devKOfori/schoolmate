@@ -1,21 +1,40 @@
 {% extends "partials/base.html" %}
+{% load static %}
 
 {% block title %}
     <title>Login Page</title>
 {% endblock title %}
 
 {% block content %}
-    <h3>Login Page</h3>
-    <hr>
-    <div class="error-message">
-        {% if error_message %}
-            <span>{{error_message}}</span>
-        {% endif %}
+    {% include 'partials/navbar.html' %}
+    <div class="login-container">
+        <div class="login-body">
+            <h1 class="login-title">Sign in</h1>
+            <div class="login-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <!-- <label for="id_email" class="form-label login-email-label">Email</label> -->
+                        <input type="email" name="email" id="id_email" maxlength="255" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
+                        <input type="password" name="password" id="id_password" class="form-control" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
+                        <input type="submit" value="Sign in" class="form-button">
+                    </div>
+                </form>
+                <span class="forgot-password">Forgot Password?</span>
+            </div>
+            <div class="sign-up">
+                <span class="no-account-text">Don't have an account?</span>
+                <span class="sign-up-text">
+                    Sign up
+                </span>
+            </div>
+        </div>
     </div>
-    <form method="post">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Login">
-    </form>
 {% endblock content %}
 
