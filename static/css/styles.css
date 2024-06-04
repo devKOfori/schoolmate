@@ -7,6 +7,8 @@
     /* --bg-primary: hsl(240, 97%, 12%); */
     /* --bg-primary: hsl(240, 100%, 7%); */
     --bg-primary: hsl(240, 100%, 4%);
+    --bg-primary-faded: rgba(0, 0, 20, 0.1);
+    --bg-secondary: hsl(48, 96%, 28%);
     --border-color: hsl(0, 0%, 46%);
 }
 
@@ -66,6 +68,7 @@ ul a:hover {
 
 a {
     text-decoration: none;
+    color: black;
 }
 
 .login-container {
@@ -150,7 +153,191 @@ input::placeholder {
     font-weight: bold;
 }
 
+/* index page */
+.banner {
+    height: calc(100vh - 59px);
+}
+
+.banner-message {
+    width: 100%;
+    /* padding: 50px; */
+    background-color: white;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.banner-image {
+    background-image: url('../images/banner_image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 300px;
+    position: relative;
+}
+
+.mission {
+    width: 70%;
+    height: 50%;
+    margin: 0 auto;
+    overflow: hidden;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.mission h1 {
+    font-weight: bold;
+    display: inline-block;
+}
+
+.mission .mission-statement {
+    margin-top: 20px;
+    font-size: 1.1rem;
+}
+
+.mission .mission-title {
+    color: var(--bg-secondary);
+}
+
+.banner-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-primary-faded);
+    z-index: 1;
+}
+
+.banner-image > * {
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+.banner-column h1 {
+    display: inline-block;
+}
+
+.banner-column ul {
+    height: 100px;
+    padding: 10px 0;
+}
+
+.perks-list-item {
+    padding-bottom: 10px;
+}
+
+.fa-star {
+    padding-right: 3px;
+    color: var(--bg-secondary);
+}
+
+.banner-message p {
+    padding: 10px 0;
+    height: 100px;
+    line-height: 20px;
+}
+
+.setup-call {
+    font-size: 1.3rem;
+    margin: 10px 0;
+    padding: 10px;
+    border: 2px solid var(--bg-primary);
+    border-radius: 5px;
+    display: inline-block;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.btn {
+    background-color: white;
+    font-size: 1.3rem;
+    margin: 10px 0;
+    padding: 10px;
+    border: 2px solid var(--bg-primary);
+    border-radius: 5px;
+    display: inline-block;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn2 {
+    padding: 50px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.btn:hover {
+    cursor: pointer;
+    background-color: var(--bg-primary-faded);
+}
+
+.bdr-2-gold {
+    border: 2px solid var(--bg-secondary);
+}
+
+button {
+    cursor: pointer;
+}
+
+.btn button {
+    font-size: 100%;
+    background-color: transparent;
+    border-style: none;
+}
+
+.setup-call a {
+    color: var(--bg-primary);
+}
+
+.highlight-gold-bold {
+    color: var(--bg-secondary);
+    font-weight: bold;
+}
+
+/* Roomtype modal */
+.mod-roomtype {
+    width: 50%;
+    height: 50%;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    /* background-color: rgba(0,0,0,0.4); */
+    background-color: white;
+    box-shadow: 0 0 1em black;
+    padding: 40px;
+    border-radius: 5px;
+}
+
+
+
+.mod-roomtype-close {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.mod-roomtype-close:hover {
+    cursor: default;
+    border: 1px solid var(--bg-primary);
+    padding: 0 7px;
+    border-radius: 3px;
+}
+
+.mod-roomtype-content .body {
+    margin-top: 40px;
+}
 /* Utility Classes */
+.container {
+    width: 80%;
+    /* height: 100%; */
+    margin: 0 auto;
+    padding: 50px;
+    position: relative;
+}
 .form-group {
     margin-bottom: 15px;  
 }
@@ -169,6 +356,30 @@ input::placeholder {
     font-size: 1em;
 }
 
+.grid {
+    display: grid;
+    width: 100%;
+    height: 100%;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.spc-between {
+    justify-content: space-between;
+}
+
+.col-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+.col-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
 .sign-up {
     margin-top: 50px;
     text-align: left;
@@ -184,4 +395,8 @@ input::placeholder {
 .sign-up-text:hover {
     /* color: var(--border-color); */
     text-decoration: underline;
+}
+
+.border-bottom-5 {
+    border-bottom: 5px solid var(--bg-secondary);
 }

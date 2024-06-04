@@ -2,39 +2,68 @@
 
 {% block content %}
     {% include "partials/navbar.html" %}
-    <div class="page-banner">
-        <div class="banner-layer"></div>
-        <div class="banner-call-button">
-            <div class="btn-banner-call">
-                <button id="btn-banner-call">
-                    <span class="banner-call-message">Setup your Hostel on <span class="logo-text"><span class="school-title">School</span><span class="mate-title">Mate</span></span>
-                </button>
+    <div class="banner">
+        <div class="banner-image">
+            <div class="mission">
+                <h1 class="mission-title">Our Mission</h1>
+                <div class="mission-statement">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio quasi nihil modi fugiat consequatur sint recusandae, obcaecati minus est aperiam quis animi totam libero corporis sunt debitis dolores deserunt pariatur?</div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="banner-message">
+                <div class="banner-column banner-column-owner">
+                    <h1 class="border-bottom-5">Hostel Owners</h1>
+                    <p>
+                        Join over <span class="hostel-count">49</span> hostels and setup your hostel in simple, easy steps.
+                    </p>
+                    <div class="btn">
+                        <a href="#">Setup your hostel <span class="highlight-gold-bold">Now!</span></a>
+                    </div>
+                </div>
+                <div class="banner-column banner-column-student">
+                    <h1 class="border-bottom-5">Students</h1>
+                    <p>
+                        Select as many hostels in just a single application.<br> 
+                        Review offers from different hostels. <br>
+                        Pick your best offer.
+                        <div class="btn">
+                            <!-- <a href="#">Apply to your <span class="highlight-gold-bold">favorite</span> hostels</a> -->
+                            <button class="open-mod-roomtype" id="open-mod-roomtype">Apply to your <span class="highlight-gold-bold">favorite</span> hostels</button>
+                        </div>
+                    </p>
+                </div>
+                <div class="banner-column banner-column-perks">
+                    <h1 class="border-bottom-5">Perks</h1>
+                    <ul class="perks-list">
+                        <li class="perks-list-item"><i class="fa fa-star" aria-hidden="true"></i>Free for first 6 months.</li>
+                        <!-- <li class="perks-list-item"><i class="fa fa-star" aria-hidden="true"></i>Easy accomodation application with multiple hostel selection.</li> -->
+                        <li class="perks-list-item"><i class="fa fa-star" aria-hidden="true"></i>24/7 support for new hostels for the first 1 month.</li>
+                        <li class="perks-list-item"><i class="fa fa-star" aria-hidden="true"></i>Rich list of features for students including student events, job & internship opportunity listings, etc.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Select room type modal -->
+        <div class="mod-roomtype" id="mod-roomtype">
+            <div class="mod-roomtype-content">
+                <div class="header flex spc-between">
+                    <h1>Select Room Type</h1>
+                    <span class="mod-roomtype-close">&times;</span>
+                </div>
+                <div class="body grid col-3">
+                    <div class="btn btn2 bdr-2-gold single">
+                        Single
+                    </div>
+                    <div class="btn btn2 bdr-2-gold shared">
+                        Shared
+                    </div>
+                    <div class="btn btn2 bdr-2-gold all">
+                        All
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="about-us">
-        <h5>About <span class="logo-text"><span class="school-title">School</span><span class="mate-title">Mate</span>
-
-        </h5>
-    </div>
+   
 {% endblock content %}
-
-<div class="nav-container">
-    <div class="logo" id="logo">
-            <!-- <img src="" id="logo-image" alt="logo"> -->
-            <div class="logo-text">
-                <a href="{% url 'dashboard' %}"><span class="school-title" id="school-title">School</span><span class="mate-title" id="mate-title">Mate</span></a>
-            </div>
-    </div>
-    <div class="nav-items">
-        <ul class="nav-menu-items">
-            <li class="nav-list-item" id="hostels-list-item">Hostels</li>
-            <li class="nav-list-item" id="about-list-item">About Us</li>
-            <li class="nav-list-item" id="blog-list-item">Blog</li>
-            <li class="nav-list-item" id="faq-list-item">FAQ</li>
-            <li class="nav-list-item" id="contact-list-item">Contact Us</li>
-            <li class="nav-list-item" id="account-list-item">Account</li>
-        </ul>
-    </div>
-</div>

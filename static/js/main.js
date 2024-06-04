@@ -92,3 +92,16 @@ let checkboxes = document.querySelectorAll('.btn-check');
 checkboxes.forEach(function(checkbox) {
     checkbox.addEventListener("click", handleHostelSelection);
 })
+
+const opnModRT = document.querySelector('.open-mod-roomtype');
+const modRT = document.querySelector('#mod-roomtype');
+const modRTx = document.querySelector('.mod-roomtype-close');
+
+opnModRT.addEventListener('click', ()=>{
+    modRT.style.display = 'block';
+})
+
+modRTx.addEventListener('click', ()=>{
+    modRT.style.display = 'none';
+    
+})
