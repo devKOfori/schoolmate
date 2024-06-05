@@ -1,7 +1,7 @@
 import datetime
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import (
@@ -164,6 +164,23 @@ def search(request):
         "cities": cities
     }
     return render(request, "housing/hostel_list.html", context=context)
+
+class SearchListView(generic.ListView):
+    model = models.Hostel
+    context_object_name = "models"
+    template_name = "housing/search_hostel.html"
+
+    def get_queryset(self):
+        room_category = self.kwargs.get("room_category")
+        queryset = super().get_queryset()
+        if room_category.casefold() != 'all':
+            queryset.filter(
+                room__room_category__name = room_category
+            )
+        return queryset
+    
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 #======================================================================================================================
 #               PROFILE VERIFICATION
 #======================================================================================================================

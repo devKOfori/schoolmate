@@ -14,6 +14,7 @@ urlpatterns = [
 #======================================================================================================================
 #               HOSTEL URLS
 #======================================================================================================================
+    path("hostels/apply/<str:room_category>/", views.SearchListView.as_view(), name="search-hostel"),
     path("hostels/<str:hostel_id>/apply", views.HostelApplicationCreateView.as_view(), name="hostel-application"),
     path("application/<str:application_id>/", views.HostelApplicationDetailView.as_view(), name="hostel-application-detail"),
     path("hostels/all", views.hostel_list, name="hostel-list"),

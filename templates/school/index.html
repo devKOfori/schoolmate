@@ -1,7 +1,10 @@
 {% extends "partials/base.html" %}
 
 {% block content %}
+    <!-- Navbar -->
     {% include "partials/navbar.html" %}
+
+    <!--  -->
     <div class="banner">
         <div class="banner-image">
             <div class="mission">
@@ -52,18 +55,19 @@
                 </div>
                 <div class="body grid col-3">
                     <div class="btn btn2 bdr-2-gold single">
-                        Single
+                        <a href="{% url 'search-hostel' 'single' %}">Single</a>
                     </div>
                     <div class="btn btn2 bdr-2-gold shared">
-                        Shared
+                        <a href="{% url 'search-hostel' 'shared' %}">Shared</a>
                     </div>
                     <div class="btn btn2 bdr-2-gold all">
-                        All
+                        <a href="{% url 'search-hostel' 'all' %}">All</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-   
+    <!-- Footer -->
+    {% include "partials/footer.html" %}
 {% endblock content %}

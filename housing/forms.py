@@ -5,7 +5,10 @@ from .models import (
     Room, AssignRoom, HostelVendor,
     RoomRequest, RoomOffer, RoomOfferDetails, VerifyProperty,
     DocumentVerificationPro, HostelEmployeeAlloc,
-    RoomType, Facility, HostelApplication
+    RoomType, Facility, HostelApplication, RoomCategory
+)
+from school.models import (
+    City
 )
 from django.db.models import Q
 from django.utils import timezone
@@ -144,3 +147,16 @@ class HostelApplicationForm(forms.ModelForm):
             "hostels", "room_types", 
             "min_budget", "max_budget"
         ]
+
+class SearchHostelForm(forms.Form):
+    room_category = forms.ChoiceField(choices=[])
+    # school = forms.ChoiceField(choices=[])
+    city = forms.ChoiceField(choices=[])
+    room_type = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super(SearchHostelForm, self).__init__(*args, **kwargs)
+        self.fields['room_category'].choices = [(obj.id, obj.name) for obj in RoomCategory.objects.all()]
+        # self.fields['school'].choices = [(obj.id, obj.name) for obj in RoomCategory.objects.all()]
+        self.fields['city'].choices = [(obj.id, obj.name) for obj in City.objects.all()]
+        self.fields['room_type'].choices = [(obj.id, obj.name) for obj in RoomType.objects.all()]

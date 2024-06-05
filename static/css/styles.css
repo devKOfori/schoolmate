@@ -145,7 +145,7 @@ a {
     background-color: var(--border-color);
 }
 
-input:valid {
+.login-form :valid {
     background-color: var(--bg-primary);
 }
 
@@ -330,6 +330,58 @@ button {
 .mod-roomtype-content .body {
     margin-top: 40px;
 }
+
+/* Footer */
+
+.footer {
+    height: 350px;
+    background-color: var(--bg-primary);
+}
+
+.footer-body {
+    height: 90%;
+    color: white;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0 auto;
+}
+
+.copyright {
+    color: white;
+    font-size: 1.2rem;
+    height: 10%;
+    justify-content: center;
+}
+
+.search-hostel-main {
+    grid-template-columns: 1fr 3fr;
+    gap: 10px;
+}
+
+.search-hostel-form {
+    /* background-color: red; */
+    min-height: calc(100vh - 59px);
+    padding: 15px 30px;
+}
+
+.search-hostel-form p {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.search-hostel-results {
+    background-color: black;
+    min-height: calc(100vh - 59px);
+    padding: 15px 30px;
+}
+
+.search-hostel-btn {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+
+
 /* Utility Classes */
 .container {
     width: 80%;
@@ -359,7 +411,7 @@ button {
 .grid {
     display: grid;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
 }
 
 .flex {
@@ -380,6 +432,11 @@ button {
     gap: 10px;
 }
 
+/* Highlights */
+.hl-g {
+    color: var(--bg-secondary);
+    font-weight: bold;
+}
 .sign-up {
     margin-top: 50px;
     text-align: left;

@@ -1,0 +1,18 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    {% include "partials/navbar.html" %}
+
+    <div class="grid search-hostel-main">
+        <div class="search-hostel-form">
+            <p>Filter by</p>
+            <form name="search-hostel-form">
+
+                <input type="submit" value="Search" class="btn">
+            </form>
+        </div>
+        <div class="search-hostel-results">
+
+        </div>
+    </div>
+{% endblock content %}
