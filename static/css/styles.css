@@ -8,6 +8,7 @@
     /* --bg-primary: hsl(240, 100%, 7%); */
     --bg-primary: hsl(240, 100%, 4%);
     --bg-primary-faded: rgba(0, 0, 20, 0.1);
+    --link-text: rgb(98, 98, 238);
     --bg-secondary: hsl(48, 96%, 28%);
     --border-color: hsl(0, 0%, 46%);
 }
@@ -34,6 +35,10 @@ body {
 
 .hide-menu {
     display: none;
+}
+
+.dashboard-nav{
+    display: block !important;
 }
 
 ul {
@@ -137,6 +142,60 @@ a {
     border-radius: 30px;
     text-align: center;
 
+}
+
+/* Dashboard */
+.dashboard-main {
+    min-height: 100vh;
+    background-color: rgb(241, 241, 241);
+}
+
+/* Sidebar */
+.sidebar {
+    max-width: 15%;
+    min-height: 100vh;
+    background-color: white;
+    padding: 10px;
+}
+
+.sidebar-profile-display {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-picture {
+    
+}
+
+.profile-picture img {
+    width: 70px;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.user-details {
+    width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-size: small;
+}
+
+.sidebar-menus {
+    margin-top: 50px;
+}
+
+.sidebar-menu-item {
+    padding: 5px 0;
+}
+
+/* Register Page */
+
+
+.sign-in-text a {
+    color: var(--link-text);
 }
 
 .forgot-password:hover {
@@ -444,7 +503,7 @@ button {
 }
 
 .sign-up-text {
-    color: rgb(98, 98, 238);
+    color: var(--link-text);
     padding: 0 3px;
     cursor: pointer;
 }

@@ -1,0 +1,26 @@
+{% load static %}
+<div class="sidebar">
+    <div class="sidebar-profile-display">
+        <div class="profile-picture">
+            <img src="{% static 'images/df_profile_picture.jpeg'  %}" alt="">
+        </div>
+        <div class="user-details">
+            <p>{{user.email}}</p>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+    <div class="sidebar-menu-container">
+        <div class="sidebar-menus">
+            <ul>
+                <li class="sidebar-menu-item">My Hostel
+                    <ul>
+                        <li><a href="">View Hostels</a></li>
+                        <li><a href="">Create Hostel</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">Employee</li>
+                <li class="sidebar-menu-item">Report a complain</li>
+            </ul>
+        </div>
+    </div>
+</div>

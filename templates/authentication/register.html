@@ -1,10 +1,51 @@
 {% extends "partials/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Login Page</title>
+{% endblock title %}
 
 {% block content %}
-    <h1>Register Page</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{employee_form}}
-        <input type="submit" value="Register">
-    </form>
+    {% include 'partials/navbar.html' %}
+    <div class="login-container">
+        <div class="login-body">
+            <h1 class="login-title">Register</h1>
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{message}}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <div class="login-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <!-- <label for="id_email" class="form-label login-email-label">Email</label> -->
+                        <input type="email" name="email" id="id_email" maxlength="255" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
+                        <input type="password" name="password" id="id_password" class="form-control" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
+                        <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="form-group">
+                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
+                        <input type="submit" value="Register" class="form-button">
+                    </div>
+                </form>
+                {% comment %} <span class="forgot-password">Forgot Password?</span> {% endcomment %}
+            </div>
+            <div class="sign-up">
+                <span class="no-account-text">Already have an account?</span>
+                <span class="sign-in-text">
+                    <a href="{% url "login" %}">Sign in</a>
+                </span>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
+

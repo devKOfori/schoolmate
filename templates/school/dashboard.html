@@ -5,24 +5,7 @@
 {% endblock title %}
 
 {% block content %}
-    <h3>Dashboard</h3>
-    <hr>
-    {% if user.is_authenticated %}
-    <a href="{% url 'logout' %}">Logout</a>
-    {% if employee.role.id == 1 %}
-        <br><a href="{% url 'create-vendor' %}">Setup Vendor Profile</a>
-        <br><a href="{% url 'register' %}">Add Employee</a>
-        <br><a href="{% url 'list-employee' %}">List Employee</a>
-        <br><a href="{% url 'my-employee' %}">My Employee</a>
-        <br><a href="{% url 'hostel-list' %}">All Hostels</a>
-        <br><a href="{% url 'my-hostels' %}">My Hostels</a>
-        <br><a href="{% url 'create-hostel' %}">Create Hostel</a>
-        <br><a href="{% url 'all-vendors' %}">All Vendors</a>
-        <br><a href="{% url 'my-vendors' %}">My Vendor Accounts</a>
-        <br><a href="{% url 'all-rooms' %}">All Rooms</a>
-        <br><a href="{% url 'create-request' %}">Create Requests</a>
-        <br><a href="{% url 'all-room-requests' %}">All Room Requests</a>
-        <br><a href="{% url 'my-hostel-requests' %}">My Room Requests</a>
-    {% endif %}
-    {% endif %}
+    <div class="dashboard-main">
+        {% include "partials/sidebar.html" %}
+    </div>
 {% endblock content %}
