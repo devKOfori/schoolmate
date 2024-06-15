@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse
 from employee.forms import EmployeeCreationForm
 from employee.models import Employee
@@ -8,6 +8,14 @@ from .models import CustomUser
 from housing import models as housing_models
 from datetime import datetime
 import utils
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+
 # Create your views here.
 
 def user_login(request):
@@ -18,13 +26,15 @@ def user_login(request):
             password = form.cleaned_data["password"]
             user = authenticate(request, email=email, password=password)
             if user is not None:
+                print(user, password)
                 login(request, user)
                 return redirect(reverse("dashboard"))
             else:
-                return render(request, "authentication/login.html", {"form": form, "error_message": "Invalid email or password"})
+                messages.error(request, "Invalid email or password")
+                return render(request, "authentication/login.html", {"form": form})
     else:
         form = LoginForm()
-    return render(request, 'authentication/login.html', {'form': form, "hide_menu":True})
+        return render(request, 'authentication/login.html', {'form': form, "hide_menu":True})
 
 def user_logout(request):
     logout(request)
@@ -64,6 +74,28 @@ def register(request):
     else:
         return render(request, "authentication/register.html", {"employee_form": employee_form})
     
+def register_user(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
+        if all([email, password, password2]) and password == password2:
+            if not CustomUser.objects.filter(email=email).exists():
+                user = CustomUser.objects.create_user(
+                    email = email,
+                    username = email,
+                    password = password
+                )
+                return redirect("login")
+            else:
+                messages.error(request, "A user with this email already exist.")
+                return render(request, 'authentication/register.html')
+        else:
+            messages.error(request, "Please correct the errors below.")
+            return render(request, 'authentication/register.html')
+    else:
+        return render(request, 'authentication/register.html')
+    
 def assign_default_role(employee: Employee, created_by: Employee):
     # 1. Assign new employee to the hostel of the one who created the employee record
     # 2. Assign a default role to the created employee record
@@ -80,3 +112,39 @@ def assign_default_role(employee: Employee, created_by: Employee):
     # print(employee_hostel_alloc)
     employee_hostel_alloc.save()
     return employee_hostel_alloc     
+
+
+# reset password view
+def reset_password(request):
+    if request.method =='POST':
+        email = request.POST.get('email')
+        UserModel = get_user_model()
+        try:
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExist:
+            messages.error(request, 'Sorry, email address not found')
+            return render(request, 'authentication/reset_password.html')
+
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+        context = {
+            'email':user.email,
+            'domain': request.get_host(),
+            'site_name': 'Your Site Name',
+            'uid': uid,
+            'user': user,
+            'token': token,
+            'protocol': 'https' if request.is_secure() else 'http',
+        }
+        email_template_name = 'authentication/reset_password_email.html'
+        subject = 'Password reset'
+        email_body = render_to_string(email_template_name, context)
+        send_mail(
+            subject=subject, message=email_body, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user.email]
+        )
+
+        messages.success(request, "Password reset email has been sent")
+        return render(request, 'authentication/reset_password.html')
+    else:
+        return render(request, 'authentication/reset_password.html')

@@ -97,6 +97,7 @@ const opnModRT = document.querySelector('.open-mod-roomtype');
 const modRT = document.querySelector('#mod-roomtype');
 const modRTx = document.querySelector('.mod-roomtype-close');
 
+if (opnModRT && modRT && modRTx){
 opnModRT.addEventListener('click', ()=>{
     modRT.style.display = 'block';
 })
@@ -104,4 +105,31 @@ opnModRT.addEventListener('click', ()=>{
 modRTx.addEventListener('click', ()=>{
     modRT.style.display = 'none';
     
-})
+});
+}
+
+const rangeInput = document.getElementById('budget');
+const rangeInfo = document.getElementById('range-info');
+
+if (rangeInput && rangeInfo){
+// rangeMin = rangeInput.min;
+// rangeMax = rangeInput.max;
+// rangeInfo.textContent = `Min: ${min}, Max: ${max}`;
+function updateRangeInfo() {
+    rangeMin = rangeInput.min;
+    rangeMax = rangeInput.max;
+
+    rangeInfo.textContent = `Min: ${rangeMin}, Max: ${rangeMax}`;
+}
+
+updateRangeInfo();
+
+rangeInput.addEventListener('change', updateRangeInfo);
+// rangeInput.addEventListener('input', ()=>{
+//     rangeMin = rangeInput.min;
+//     rangeMax = rangeInput.max;
+
+//     rangeInfo.textContent = `Min: ${min}, Max: ${max}`;
+
+// });
+}

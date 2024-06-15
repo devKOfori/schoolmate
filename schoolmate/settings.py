@@ -147,3 +147,13 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+DEFAULT_FROM_EMAIL = 'oforimensahebenezer07@gmail.com'
+
+# Example settings for Gmail SMTP server
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'oforimensahebenezer07@gmail.com'
+EMAIL_HOST_PASSWORD = 'thriller2.'

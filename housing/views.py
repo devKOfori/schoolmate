@@ -18,7 +18,7 @@ from accounts.forms import (
 )
 from .models import (
     HostelStatus, Hostel, Room, HostelVendor,
-    RoomRequest, VerifyProperty
+    RoomRequest, VerifyProperty, RoomCategory
 )
 from employee import models as employee_models
 from django.urls import reverse, reverse_lazy
@@ -167,20 +167,37 @@ def search(request):
 
 class SearchListView(generic.ListView):
     model = models.Hostel
-    context_object_name = "models"
+    context_object_name = "hostels"
     template_name = "housing/search_hostel.html"
 
     def get_queryset(self):
-        room_category = self.kwargs.get("room_category")
-        queryset = super().get_queryset()
-        if room_category.casefold() != 'all':
-            queryset.filter(
-                room__room_category__name = room_category
-            )
-        return queryset
+        room_category_name = self.kwargs.get('room_category').title()
+        if room_category_name and room_category_name in ['Shared', 'Single']:
+            room_category = RoomCategory.objects.filter(name=room_category_name).first()
+
+            if room_category:
+                queryset = Hostel.objects.filter(room__room_category=room_category).distinct()
+            else:
+                queryset = Hostel.objects.none()  # Return an empty queryset if the category doesn't exist
+        else:
+            queryset = Hostel.objects.all()
+        location = self.request.GET.get('location', None)
+        rc = self.request.GET.get('roomcategory', None)
+        # print(location)
+        if location:
+            queryset = queryset.filter(location=location)
+        if rc:
+            if rc != 'All':
+                queryset = queryset.filter(room__room_category__name=rc)
+            print(queryset)
+        return queryset.distinct()   
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        hostel_count = self.get_queryset().count()
+        context['hostel_count'] = hostel_count
+        return context
     
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 #======================================================================================================================
 #               PROFILE VERIFICATION
 #======================================================================================================================

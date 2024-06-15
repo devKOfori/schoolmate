@@ -7,12 +7,53 @@
         <div class="search-hostel-form">
             <p>Filter by</p>
             <form name="search-hostel-form">
-
+                <h3 class="search-title">Room Type</h3>
+                <div class="form-group">
+                    <input type="radio" name="roomcategory" id="roomcategory" value="Single"> Single 
+                    <input type="radio" name="roomcategory" id="roomcategory" value="Shared"> Shared 
+                    <input type="radio" name="roomcategory" id="roomcategory" value="All"> All 
+                </div>
+                <hr>
+                <h3 class="search-title">City</h3>
+                <div class="form-group">
+                    <input type="text" name="location" id="location" placeholder="City">
+                </div>
+                <div class="form-group">
+                    <label for="min-budget">Min. Budget</label>
+                    <select name="budget" id="min-budget">
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                    </select>
+                    <label for="max-budget">Max. Budget</label>
+                    <select name="budget" id="max-budget">
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="300">300</option>
+                    </select>
+                    <!-- <span class="range-info" id="range-info"></span> -->
+                </div>
                 <input type="submit" value="Search" class="btn">
             </form>
         </div>
         <div class="search-hostel-results">
-
+            <h1>{{hostel_count}} hostels</h1>
+            {% for hostel in hostels %}
+                <div class='card grid hostel-display-card'>
+                    {% if not hostel.photos %}
+                        print(hostel.photos)
+                        <img src="" alt="">
+                    {% else %}
+                    <div class="hostel-display-photo">
+                        <i class="fa-solid fa-hotel fa-9x"></i>
+                    </div>
+                    {% endif %}
+                    <div class="hostel-display-details">
+                        <h3 class="hostel-name">{{hostel.name}}</h3>
+                        <small><i class="fas fa-location-dot"></i>{{hostel.location}} <i class="fas fa-mobile"></i>{{hostel.phone}}</small>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock content %}
