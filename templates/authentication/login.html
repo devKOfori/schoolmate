@@ -33,12 +33,12 @@
                         <input type="submit" value="Sign in" class="form-button">
                     </div>
                 </form>
-                <span class="forgot-password">Forgot Password?</span>
+                <span class="forgot-password"><a href="{% url 'reset-password' %}">Forgot Password?</a></span>
             </div>
             <div class="sign-up">
                 <span class="no-account-text">Don't have an account?</span>
                 <span class="sign-up-text">
-                    Sign up
+                    <a href="{% url 'register' %}">Sign up</a>
                 </span>
             </div>
         </div>

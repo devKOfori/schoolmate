@@ -36,10 +36,18 @@ class TenantCreationForm(forms.ModelForm):
 class HostelCreationForm(forms.ModelForm):
     class Meta:
         model = Hostel
-        exclude = [
-            "warden", "created_by", 
-            "amenities", "status", "vendor"
+        # exclude = [
+        #     "warden", "created_by", 
+        #     "amenities", "status", "vendor"
+        # ]
+        fields = [
+            'hostel_id', 'name', 'location',
+            'phone', 'email', 'registration_number',
+            'registration_number'
         ]
+        widgets = {
+            'hostel_id': forms.TextInput(attrs={'disabled': 'disabled'}),
+        }
 
 class HostelAddressForm(forms.ModelForm):
     class Meta:

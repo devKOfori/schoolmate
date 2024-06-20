@@ -1,4 +1,5 @@
 import datetime
+import uuid
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse
@@ -113,7 +114,101 @@ def create_hostel(request):
         return render(request, "housing/create_hostel.html", {"hostel_form": hostel_form, "address_form": hostel_address_form})
     else:
         return render(request, "housing/create_hostel.html", {"hostel_form": hostel_form, "address_form": hostel_address_form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class HostelCreateView(generic.CreateView):
+    model = Hostel
+    form_class = HostelCreationForm
+    template_name = 'housing/create_hostel.html'
+
+    def get_initial(self):
+        initials = super().get_initial()
+        initials['hostel_id'] = utils.generate_hostel_id()
+        return initials
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # initials = self.get_initial()
+        # hostel_id = initials.get('hostel_id')
+        # context['hostel_id'] = hostel_id
+        return context
     
+    def form_valid(self, form):
+        cleaned_data =  form.cleaned_data
+        logged_in_user = self.request.user
+        print(logged_in_user)
+        form.instance.company = cleaned_data.get('name', '')
+        return super().form_valid(form)
+    
+    def post(self, request, *args, **kwargs):
+        form = HostelCreationForm(request.POST)
+        # change this. set default value (utils.generate_hostel_id) on hostel_id field of Hostel Model
+        if not request.POST.get('hostel_id'):
+            form.data['hostel_id'] = utils.generate_hostel_id()
+        print(f"***Hostel ID: {request.POST.get('hostel_id')}")
+        if form.is_valid():
+            print("I am here")
+            hostel = form.save(commit=False)
+            hostel.created_by = request.user
+            hostel.save()
+            return redirect(reverse("hostel-detail", kwargs={"hostel_id": hostel.hostel_id}))
+        print(form.errors)
+        return render(request, "housing/create_hostel.html")
+    
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        print('I got here')
+        return super().form_invalid(form)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def hostel_detail(request, hostel_id):
     hostel_application_form = forms.HostelApplicationForm
     hostel = get_object_or_404(Hostel, hostel_id=hostel_id)

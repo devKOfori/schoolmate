@@ -1,6 +1,7 @@
 from datetime import datetime
 from housing import models as housing_models
 from employee import models as emp_models
+import uuid
 
 def update_emp_info(employee, hostel_id):
     if hostel_id:
@@ -28,3 +29,9 @@ def assign_new_role(hostel, employee, added_by, role):
     )
     new_role.save()
         
+
+def generate_hostel_id():
+    uuid_string = str(uuid.uuid4())
+    hostel_id = uuid_string.split('-')[-1]
+    hostel_id = 'H' + hostel_id.upper()
+    return hostel_id

@@ -13,6 +13,7 @@ from django.db.models import Q
 import os
 from django.shortcuts import get_object_or_404
 import utils
+from django.contrib.auth import get_user_model
 # Create your models here.
 
 class VericationDocumentType(models.Model):
@@ -344,7 +345,7 @@ class HostelEmployeeAlloc(models.Model):
      
 class Hostel(models.Model):
     name = models.CharField(max_length=255, db_index=True)
-    hostel_id = models.CharField(max_length=255, unique=True) # unique code assigned to each hostel
+    hostel_id = models.CharField(max_length=255, unique=True, default=utils.generate_hostel_id) # unique code assigned to each hostel
     location = models.CharField(max_length=255)
     capacity = models.PositiveBigIntegerField(default=0)
     warden = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
@@ -356,34 +357,40 @@ class Hostel(models.Model):
     status = models.ForeignKey(HostelStatus, on_delete=models.SET_NULL, null=True)
     amenities = models.ManyToManyField(HostelAmenities)
     vendor = models.ForeignKey(HostelVendor, on_delete=models.SET_NULL, null=True)
-    created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name="hostels")
+    # created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name="hostels")
+    created_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='hostels'
+    )
     base_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     
-    def save(self, *args, **kwargs):
-        print(self.created_by)
-        super().save(*args, **kwargs)
-        block = None
-        manager = HostelRoles.objects.filter(name="Manager").first()
-        if not Block.objects.filter(block_id=self.hostel_id).exists():
-            block = Block.objects.create(hostel = self, block_id = self.hostel_id, name = self.name)
-        if not Floor.objects.filter(floor_id=self.hostel_id).exists():
-            Floor.objects.create(block=block, name=self.name, floor_id=self.hostel_id)
-        print(f"***********{self.hostel_id}")
-        print(f"***********{self.created_by}")
-        print(f"***********{self.created_by.employee_id}")
-        print(f"***********{self.hostel_id}")
-        HostelEmployeeAlloc.objects.create(
-            hostel = self,
-            hostel_code = self.hostel_id,
-            employee = self.created_by,
-            employee_code = self.created_by.employee_id,
-            role = manager,
-            added_by = self.created_by
-        )
-    def assign_warden(self, employee):
-        self.warden = employee
-        self.save()
+    # def save(self, *args, **kwargs):
+    #     print(self.created_by)
+    #     super().save(*args, **kwargs)
+    #     block = None
+    #     manager = HostelRoles.objects.filter(name="Manager").first()
+    #     if not Block.objects.filter(block_id=self.hostel_id).exists():
+    #         block = Block.objects.create(hostel = self, block_id = self.hostel_id, name = self.name)
+    #     if not Floor.objects.filter(floor_id=self.hostel_id).exists():
+    #         Floor.objects.create(block=block, name=self.name, floor_id=self.hostel_id)
+    #     print(f"***********{self.hostel_id}")
+    #     print(f"***********{self.created_by}")
+    #     print(f"***********{self.created_by.employee_id}")
+    #     print(f"***********{self.hostel_id}")
+    #     HostelEmployeeAlloc.objects.create(
+    #         hostel = self,
+    #         hostel_code = self.hostel_id,
+    #         employee = self.created_by,
+    #         employee_code = self.created_by.employee_id,
+    #         role = manager,
+    #         added_by = self.created_by
+    #     )
+    # def assign_warden(self, employee):
+    #     self.warden = employee
+    #     self.save()
 
     class Meta:
         db_table = "hostel"

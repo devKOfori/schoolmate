@@ -2,10 +2,29 @@
 
 {% block content %}
     <h3>Create Hostel Page</h3>
+    {% if errors %}
+        <ul>
+        {% for error in errors %}
+            <li>{{error}}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
-        {{hostel_form}}
-        {{address_form}}
+        <label for="id_hostel_id">Hostel ID</label>
+        <input type="text" name="hostel_id" id="id_hostel_id"
+        maxlength="255" value="{{hostel_id}}" required
+        ><br>
+        <label for="id_name">Name of Hostel</label>
+        <input type="text" name="name" maxlength="255" required id="id_name"><br>
+        <label for="id_location">Location</label>
+        <input type="text" name="location" maxlength="255" required id="id_location"><br>
+        <label for="id_phone">Phone</label>
+        <input type="text" name="phone" maxlength="255" id="id_phone"><br>
+        <label for="id_email">Email</label>
+        <input type="text" name="email" maxlength="255" id="id_email"><br>
+        <label for="id_registration_number">Registration number</label>
+        <input type="text" name="registration_number" maxlength="255" id="id_registration_number"><br>
         <input type="submit" value="Create Hostel">
     </form>
 {% endblock content %}
