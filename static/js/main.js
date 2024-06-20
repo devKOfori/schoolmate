@@ -111,6 +111,7 @@ modRTx.addEventListener('click', ()=>{
 const rangeInput = document.getElementById('budget');
 const rangeInfo = document.getElementById('range-info');
 
+
 if (rangeInput && rangeInfo){
 // rangeMin = rangeInput.min;
 // rangeMax = rangeInput.max;
@@ -132,4 +133,37 @@ rangeInput.addEventListener('change', updateRangeInfo);
 //     rangeInfo.textContent = `Min: ${min}, Max: ${max}`;
 
 // });
+}
+
+function getSystemDate() {
+    var date = new Date();
+    return date.toDateString();
+}
+
+const sysDateEle = document.getElementById("system-date")
+
+function setDashboardDate() {
+    if (sysDateEle) {
+        sysDateEle.innerHTML = getSystemDate();
+    }
+}
+
+setDashboardDate();
+
+const registerHostelEle = document.getElementById('btn-register-hostel');
+const hostelFormEle = document.getElementById("create-hostel-modal")
+
+// function displayHostelCreationForm() {
+//     hostelFormEle.style.display = "block";    
+// }
+
+// if (registerHostelEle && hostelFormEle) {
+//     registerHostelEle.addEventListener('click', 
+//         displayHostelCreationForm());
+// }
+
+if (registerHostelEle && hostelFormEle) {
+    registerHostelEle.addEventListener('click', ()=>{
+        hostelFormEle.style.display = "block";
+    });
 }

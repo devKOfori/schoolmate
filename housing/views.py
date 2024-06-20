@@ -3,6 +3,7 @@ import uuid
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import (
@@ -128,7 +129,7 @@ def create_hostel(request):
 
 
 
-class HostelCreateView(generic.CreateView):
+class HostelCreateView(LoginRequiredMixin, generic.CreateView):
     model = Hostel
     form_class = HostelCreationForm
     template_name = 'housing/create_hostel.html'

@@ -15,6 +15,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.utils.http import url_has_allowed_host_and_scheme
 
 # Create your views here.
 
@@ -28,7 +29,11 @@ def user_login(request):
             if user is not None:
                 print(user, password)
                 login(request, user)
-                return redirect(reverse("dashboard"))
+                next_url = request.POST.get('next', request.GET.get('next'))
+                if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                    return redirect(next_url)
+                else:
+                    return redirect(reverse("dashboard"))
             else:
                 messages.error(request, "Invalid email or password")
                 return render(request, "authentication/login.html", {"form": form})
