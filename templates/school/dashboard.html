@@ -11,49 +11,14 @@
             {% include "partials/sidebar.html" %}
         </div>
         <div class="main-area">
-            <div class="portal-title flex">
-                <h3 class="portal-owner">Manager's Portal</h3>
-                <h3 class="system-datetime" id="system-date"></h3>
+            <div class="dashboard-header">
+                {% include "school/dashboard_header.html" %}
             </div>
-            <div class="content-area flex">
-                <div class="welcome-buttons-group grid">
-
-                    <div class="row grid">
-                            <div class="welcome-button" id="btn-register-hostel">
-                                <p class="welcome-button-icon">
-                                    <i class="fas fa-home"></i>
-                                </p>
-                                Register Hostel
-                            </div>
-                        
-                            <div class="welcome-button disable" id="btn-configure-hostel">
-                                <p class="welcome-button-icon">
-                                    <i class="fas fa-gear"></i>
-                                </p>
-                                Configure Hostel
-                            </div>
-                        
-                    </div>
-                    <div class="row grid">
-                            <div class="welcome-button disable" id="btn-upload-images">
-                                <p class="welcome-button-icon">
-                                    <i class="fas fa-upload"></i>
-                                </p>
-                                Upload Images
-                            </div>
-                        
-                            <div class="welcome-button disable" id="btn-add-map-info">
-                                <p class="welcome-button-icon">
-                                    <i class="fas fa-map-marker"></i>
-                                </p>
-                                Add Map Info
-                            </div>
-                        
-                    </div>
-                </div>
+            
+            <div class="dashboard-main" id="dashboard-main">
+                {% include "school/dashboard_index.html" %}
             </div>
         </div>
-
         <!-- Create Hostel modal -->
          <div class="create-hostel-modal" id="create-hostel-modal">
             <h3>Create Hostel Page</h3>
@@ -96,4 +61,5 @@
             </form>
         </div>
     </div>
+    {% include "partials/copyright.html" %}
 {% endblock content %}

@@ -12,10 +12,10 @@
     <div class="sidebar-menu-container">
         <div class="sidebar-menus">
             <ul class="sidebar-list">
-                <li class="sidebar-list-item" data-page=""><i class="fas fa-bed"></i>Room List</li>
-                <li class="sidebar-list-item" data-page=""><i class="fas fa-users"></i>Tenant Profiles</li>
-                <li class="sidebar-list-item" data-page=""><i class="fas fa-envelope-open-text"></i>Manage Tenant Applications</li>
-                <li class="sidebar-list-item" data-page=""><i class="fas fa-circle-exclamation"></i>Manage Complaints</li>
+                <li class="sidebar-list-item" data-url="{% url 'all-rooms' %}"><i class="fas fa-bed"></i><a href="{% url 'my-rooms' %}">Room List</a></li>
+                <li class="sidebar-list-item" data-url="tenant_list"><i class="fas fa-users"></i>Tenant Profiles</li>
+                <li class="sidebar-list-item" data-url="tenant_profile"><i class="fas fa-envelope-open-text"></i>Manage Tenant Applications</li>
+                <li class="sidebar-list-item" data-url="complaints"><i class="fas fa-circle-exclamation"></i>Manage Complaints</li>
             </ul>
         </div>
     </div>
