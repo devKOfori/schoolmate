@@ -1,3 +1,5 @@
+var TODAY = new Date();
+
 function addSelectedHostel(hostelId, hostelName, hostelDetails) {
     let selectedHostelsList = document.getElementById("selectedHostelsList");
     let columnDiv = document.createElement("div");
@@ -167,3 +169,36 @@ if (registerHostelEle && hostelFormEle) {
         hostelFormEle.style.display = "block";
     });
 }
+
+
+// Copyright
+const copyrightEle = document.getElementById('copyright');
+if (copyrightEle) {
+    var today_year = TODAY.getFullYear();
+    copyrightEle.innerHTML = today_year;
+}
+
+const clsSidebarItem = document.getElementsByClassName('sidebar-list-item');
+function disableSidebarItemRedirect() {
+    document.querySelectorAll('.sidebar-list-item').forEach(function(link){
+        link.addEventListener('click', function(e){
+            e.preventDefault();
+            var url = this.getAttribute('data-url');
+            console.log(url);
+            if(url){
+                fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('dashboard-main').innerHTML = data;
+                    })
+            }   
+        })
+    })
+}
+
+function preventDefault(e) {
+    e.preventDefault();
+}
+
+window.onload = disableSidebarItemRedirect;
+// document.addEventListener('DOMContentLoaded', disableSidebarItemRedirect);

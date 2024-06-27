@@ -2,13 +2,39 @@
 
 {% block content %}
     <h1>All Rooms</h1>
-    {% if rooms %}
+    <!-- {% if rooms %}
         {% for room in rooms %}
             <a href="{% url 'room-detail' room.room_number %}">{{room.room_number}}</a> - {{room.hostel}}
             <hr>
         {% endfor %}
     {% else %}
         <div>No rooms created</div>
-    {% endif %}
+    {% endif %} -->
+
+    <div class="rooms-table-container">
+        <table class="rooms-table">
+            <thead>
+                <tr>
+                    <th>Room #</th>
+                    <th>Block</th>
+                    <th>Floor</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <td>{{room.room_number}}</td>
+                    <td>{{room.block}}</td>
+                    <td>{{room.floor}}</td>
+                    <td>&nbsp;</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
     
 {% endblock content %}

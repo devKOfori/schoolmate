@@ -50,14 +50,17 @@ ul {
     display: flex;
 
 }
-
+table {
+    color: black;
+    width: 100%;
+}
 .list-item {
     padding: 10px;
     margin: 0 20px;
     font-weight: 700;
 }
 
-ul a {
+nav a {
     color: white;
 }
 
@@ -560,14 +563,18 @@ button {
     justify-content: space-between;
 }
 
-.content-area {
+.dashboard-main {
     color: white;
-    justify-content: center;
-    align-items: center;
     height: 80%;
     background-color: white;
-    margin-top: 20px;
     border-radius: 5px;
+    margin-top: 20px;
+}
+
+.content-area {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 .welcome-buttons-group {
@@ -603,4 +610,9 @@ button {
 
 .dashboard-area .create-hostel-modal {
     display: none;
+}
+
+.copyright {
+    /* color: black; */
+    background-color: var(--bg-primary);
 }

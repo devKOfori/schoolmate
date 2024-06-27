@@ -1,0 +1,31 @@
+:root {
+    /* text colors */
+    --text-primary: blue;
+    --text-info: yellow;
+    --text-success: green;
+    --text-danger: red;
+    
+}
+
+/* utils */
+
+/* font size */
+.lg {
+    font-size: large;
+}
+
+.x-lg {
+    font-size: x-large;
+}
+
+.nm {
+    font-size: medium;
+}
+
+.sm {
+    font-size: small;
+}
+
+.x-sm {
+    font-size: x-small;
+}
