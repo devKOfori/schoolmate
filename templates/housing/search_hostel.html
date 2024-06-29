@@ -1,59 +1,79 @@
 {% extends "partials/base.html" %}
 
 {% block content %}
-    {% include "partials/navbar.html" %}
-
-    <div class="grid search-hostel-main">
-        <div class="search-hostel-form">
-            <p>Filter by</p>
-            <form name="search-hostel-form">
-                <h3 class="search-title">Room Type</h3>
-                <div class="form-group">
-                    <input type="radio" name="roomcategory" id="roomcategory" value="Single"> Single 
-                    <input type="radio" name="roomcategory" id="roomcategory" value="Shared"> Shared 
-                    <input type="radio" name="roomcategory" id="roomcategory" value="All"> All 
+    <div class="page-content">
+        <div class="row grid">
+            <!-- Filter Panel -->
+            <form action="" method="get">
+                <div class="filter-panel">
+                    <h5>Filters</h5>
+                    <!-- price range -->
+                    <div class="filter-item price-range">
+                        <h6>Price Range</h6>
+                        <input type="range" name="priceRange" id="priceRange" min="100"> 
+                        <span class="slider-max-value" id="slider-max-value"></span>
+                    </div>
+                    <!-- room type options -->
+                    <div class="filter-item room-type">
+                        <h6>Room Type</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="roomType1" value="single" id="singleRoom">
+                            <label for="singleRoom" class="form-check-label">Single</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="roomType2" value="shared" id="sharedRoom">
+                            <label for="sharedRoom" class="form-check-label">Shared</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="roomType3" value="family" id="familyRoom">
+                            <label for="familyRoom" class="form-check-label">Family</label>
+                        </div>
+                    </div>
+                    <!-- City options -->
+                    <div class="filter-item city">
+                        <h6>Location</h6>
+                        <select name="city" id="city">
+                            <option value="all">All</option>
+                            <option value="accra">Accra</option>
+                            <option value="kumasi">Kumasi</option>
+                            <option value="takoradi">Takoradi</option>
+                            <option value="koforidua">Koforidua</option>
+                            <option value="tamale">Tamale</option>
+                        </select>
+                    </div>
+                    <!-- Amenities options -->
+                    <div class="filter-item amenities">
+                        <h6>Amenities</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities1" value="studyRoom" id="studyRoom">
+                            <label for="studyRoom" class="form-check-label">Study Room</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities2" value="Wifi" id="Wifi">
+                            <label for="freeWifi" class="form-check-label">WiFi</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities3" value="wheelchairAccessible" id="wheelchairAccessible">
+                            <label for="wheelchairAccessible" class="form-check-label">Wheelchair Accessible</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities4" value="smokingAllowed" id="smokingAllowed">
+                            <label for="smokingAllowed" class="form-check-label">Smoking Allowed</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities5" value="parkingSpace" id="parkingSpace">
+                            <label for="parkingSpace" class="form-check-label">Parking Space</label>
+                        </div>
+                    </div>
+                    <!-- search button -->
+                     <div class="search-hostel-btn">
+                        <input type="submit" value="Search">
+                     </div>
                 </div>
-                <hr>
-                <h3 class="search-title">City</h3>
-                <div class="form-group">
-                    <input type="text" name="location" id="location" placeholder="City">
-                </div>
-                <div class="form-group">
-                    <label for="min-budget">Min. Budget</label>
-                    <select name="budget" id="min-budget">
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                        <option value="300">300</option>
-                    </select>
-                    <label for="max-budget">Max. Budget</label>
-                    <select name="budget" id="max-budget">
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                        <option value="300">300</option>
-                    </select>
-                    <!-- <span class="range-info" id="range-info"></span> -->
-                </div>
-                <input type="submit" value="Search" class="btn">
             </form>
-        </div>
-        <div class="search-hostel-results">
-            <h1>{{hostel_count}} hostels</h1>
-            {% for hostel in hostels %}
-                <div class='card grid hostel-display-card'>
-                    {% if not hostel.photos %}
-                        print(hostel.photos)
-                        <img src="" alt="">
-                    {% else %}
-                    <div class="hostel-display-photo">
-                        <i class="fa-solid fa-hotel fa-9x"></i>
-                    </div>
-                    {% endif %}
-                    <div class="hostel-display-details">
-                        <h3 class="hostel-name">{{hostel.name}}</h3>
-                        <small><i class="fas fa-location-dot"></i>{{hostel.location}} <i class="fas fa-mobile"></i>{{hostel.phone}}</small>
-                    </div>
-                </div>
-            {% endfor %}
+            <div class="listings-panel">
+
+            </div>
         </div>
     </div>
 {% endblock content %}
