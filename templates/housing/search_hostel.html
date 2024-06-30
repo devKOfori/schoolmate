@@ -1,16 +1,17 @@
 {% extends "partials/base.html" %}
+{% load static %}
 
 {% block content %}
     <div class="page-content">
-        <div class="row grid">
+        <div class="grid col-2">
             <!-- Filter Panel -->
-            <form action="" method="get">
-                <div class="filter-panel">
-                    <h5>Filters</h5>
+            <div class="filter-panel">
+                <form action="" method="get">
+                    <h3 class="filter-title">Filter by</h3>
                     <!-- price range -->
                     <div class="filter-item price-range">
                         <h6>Price Range</h6>
-                        <input type="range" name="priceRange" id="priceRange" min="100"> 
+                        <input type="range" min="100" max="9000" name="priceRange" id="priceRange">
                         <span class="slider-max-value" id="slider-max-value"></span>
                     </div>
                     <!-- room type options -->
@@ -67,12 +68,96 @@
                     </div>
                     <!-- search button -->
                      <div class="search-hostel-btn">
-                        <input type="submit" value="Search">
+                        <input type="submit" value="Search" class="btn btn-primary">
                      </div>
-                </div>
-            </form>
-            <div class="listings-panel">
+                </form>
+            </div>
 
+            <!-- hostel listings panel -->
+            <div class="hostel-listings-main">
+                <div class="flex listings-header">
+                    <div class="search-hit-count">
+                        <div>
+                            <h2>
+                                <span class="count-value">456</span> records found
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="sort-container">
+                        <div class="sort-listings">
+                            <label for="sortField" class="sort-by">Sort By:</label>
+                            <select name="sortField" id="sortField">
+                                <option value="price">Price</option>
+                                <option value="rating">Ratings</option>
+                                <option value="popularity">Popularity</option>
+                                <option value="distance">Distance</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- hostels display -->
+                <div class="hostel-record-display grid">
+                    <div class="hostel card">
+                        <img src="{% static 'images/hostel_default.jpg' %}" alt="Hostel Image" class="card-img-top">
+                        <div class="card-body">
+                            <h4>Nyame Mireku Hostel</h4>
+                            <p><i class="fa-solid fa-location-dot"></i> Ayeduase, Kumasi</p>
+                            <p><i class="fa-solid fa-wallet"></i> $1000/semester</p>
+                        </div>
+                        <div class="card-footer flex">
+                            <div class="ratings">
+                                <span>4.3</span>
+                                <small>49 reviews</small>
+                            </div>
+                            <a href="{% url 'hostel-detail' 2 %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                    <div class="hostel card">
+                        <img src="{% static 'images/hostel_default.jpg' %}" alt="Hostel Image" class="card-img-top">
+                        <div class="card-body">
+                            <h4>Adom Bi Hostel</h4>
+                            <p><i class="fa-solid fa-location-dot"></i> Ayeduase, Kumasi</p>
+                            <p><i class="fa-solid fa-wallet"></i> $500/semester</p>
+                        </div>
+                        <div class="card-footer flex">
+                            <div class="ratings">
+                                <span>4.1</span>
+                                <small>4 reviews</small>
+                            </div>
+                            <a href="{% url 'hostel-detail' 2 %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                    <div class="hostel card">
+                        <img src="{% static 'images/hostel_default.jpg' %}" alt="Hostel Image" class="card-img-top">
+                        <div class="card-body">
+                            <h4>Nana Adoma Hostel</h4>
+                            <p><i class="fa-solid fa-location-dot"></i> Ayeduase Gate, Kumasi</p>
+                            <p><i class="fa-solid fa-wallet"></i> $200/semester</p>
+                        </div>
+                        <div class="card-footer flex">
+                            <div class="ratings">
+                                <span>4.1</span>
+                                <small>4 reviews</small>
+                            </div>
+                            <a href="{% url 'hostel-detail' 2 %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                    <div class="hostel card">
+                        <img src="{% static 'images/hostel_default.jpg' %}" alt="Hostel Image" class="card-img-top">
+                        <div class="card-body">
+                            <h4>Pent Hostel</h4>
+                            <p><i class="fa-solid fa-location-dot"></i> Ayeduase Gate, Kumasi</p>
+                            <p><span class="txt-success"><i class="fa-solid fa-wallet"></i></span> $200/semester</p>
+                        </div>
+                        <div class="card-footer flex">
+                            <div class="ratings">
+                                <span>4.1</span>
+                                <small>4 reviews</small>
+                            </div>
+                            <a href="{% url 'hostel-detail' 2 %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
