@@ -9,6 +9,7 @@
     --color-white: #FFFFFF;
     --color-text: #343A40;
     --color-price: #FF5733;
+    --color-border: #ccc;
 }
 
 * {
@@ -19,8 +20,144 @@
 
 body {
     background-color: var(--color-hero);
+    min-height: 100vh;
     color: var(--color-text);
 }
+
+ul {
+    list-style: none;
+}
+
+
+
+
+
+
+
+
+
+
+/* Login & register page styles */
+
+.login-container,
+.register-container {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-panel,
+.register-panel {
+    width: 400px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.login-panel h1,
+.register-panel h1 {
+    background-color: var(--color-primary);
+    text-align: center;
+    color: var(--color-white);
+    padding: 5px 0;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.login-avatar,
+.register-avatar {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;    
+}
+
+.login-avatar img, 
+.register-avatar img {
+    width: 20%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.login-body-container,
+.register-body-container {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-error-container, 
+.register-error-container {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-body,
+.register-body {
+    width: 70%;
+}
+
+.login-form form,
+.register-form form {
+    width: 100%;
+}
+
+.form-group {
+    margin: 10px 0;
+}
+
+.form-group input {
+    width: 100%;
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid var(--color-border);
+}
+.login-form input[type="email"],
+input[type="password"],
+.register-form input[type="email"],
+input[type="password"] {
+    background-color: transparent;
+}
+
+.account-query {
+    font-size: 12px;
+    margin-bottom: 30px;
+}
+
+.register a {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.login-form input[type="submit"],
+.register-form input[type="submit"] {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.login-form input[type="submit"]:hover, 
+.register-form input[type="submit"]:hover{
+    background-color: var(--color-hover-effect);
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* hostel listings */
@@ -118,7 +255,6 @@ select {
 
 .flex {
     display: flex;
-    align-items: center;
 }
 
 a {
@@ -142,4 +278,8 @@ a {
 
 .txt-success {
     color: var(--color-success);
+}
+
+.error {
+    color: var(--color-alert);
 }

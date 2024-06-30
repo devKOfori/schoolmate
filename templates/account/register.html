@@ -6,44 +6,46 @@
 {% endblock title %}
 
 {% block content %}
-    {% include 'partials/navbar.html' %}
-    <div class="login-container">
-        <div class="login-body">
-            <h1 class="login-title">Register</h1>
-            {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                        <li>{{message}}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            <div class="login-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <!-- <label for="id_email" class="form-label login-email-label">Email</label> -->
-                        <input type="email" name="email" id="id_email" maxlength="255" class="form-control" placeholder="Email" required>
-                    </div>
-                    <div class="form-group">
-                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
-                        <input type="password" name="password" id="id_password" class="form-control" placeholder="Password" required>
-                    </div>
-                    <div class="form-group">
-                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
-                        <input type="password" name="password2" id="id_password2" class="form-control" placeholder="Confirm Password" required>
-                    </div>
-                    <div class="form-group">
-                        <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
-                        <input type="submit" value="Register" class="form-button">
-                    </div>
-                </form>
-                {% comment %} <span class="forgot-password">Forgot Password?</span> {% endcomment %}
+    <div class="register-container flex">
+        <div class="register-panel">
+            <h1 class="register-title">Sign up</h1>
+            <div class="register-avatar flex">
+                <img src="{% static "images/df_profile_picture.jpeg" %}" alt="Login Avatar">
             </div>
-            <div class="sign-up">
-                <span class="no-account-text">Already have an account?</span>
-                <span class="sign-in-text">
-                    <a href="{% url "login" %}">Sign in</a>
-                </span>
+            <div class="register-body-container flex">
+                <div class="register-body">
+                    <div class="register-error-container flex">
+                        {% if messages %}
+                            <ul class="register-error-list">
+                                {% for message in messages %}
+                                    <li class="error">{{message}}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div class="register-form flex">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="email" name="email" id="id_email" maxlength="255" class="form-control" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="password" id="id_password" class="form-control" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="password" id="id_password" class="form-control" placeholder="Confirm Password" required>
+                            </div>
+                            <div class="account-query">
+                                <div class="register">Already have an account? Sign in <a href="{% url 'login' %}">here</a></div>
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="id_password" class="form-label login-password-label">Password</label> -->
+                                <input type="submit" value="Sign up" class="form-button">
+                            </div>
+                        </form>
+                        {% comment %} <span class="forgot-password"><a href="{% url 'reset-password' %}">Forgot Password?</a></span> {% endcomment %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
