@@ -1,0 +1,17 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="dashboard-container grid">
+        <div class="sidebar">
+            {% include "partials/sidebar.html" %}
+        </div>
+        <div class="dashboard-main-container">
+            <div class="dashboard-topbar">
+                {% include "partials/dashboard_topbar.html" %}
+            </div>
+            <div class="dashboard-content-area">
+                
+            </div>
+        </div>
+    </div>
+{% endblock content %}
