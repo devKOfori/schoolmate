@@ -147,16 +147,80 @@ input[type="password"] {
 
 
 
+/* hostel staff dashboard styles */
+.dashboard-container {
+    grid-template-columns: 1fr 4fr;
+    min-height: 100vh;
+}
 
 
+.sidebar-brand {
+    padding: 10px 20px;
+    background-color: var(--color-primary);
+    margin-bottom: 50px;
+}
+
+.sidebar-brand h1 {
+    /* font-size: x-large; */
+    color: var(--color-white);
+    font-weight: bolder;
+}
+
+.sidebar-brand i {
+    margin-right: 10px;
+}
+
+.sidebar-menus {
+    padding: 0 20px;
+}
+
+.sidebar-list {
+    font-size: large;
+}
+
+.sidebar-list-item {
+    margin-bottom: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+}
 
 
+.sidebar-list-item i {
+    margin-right: 10px;
+    color: var(--color-primary);
+}
 
+.sidebar-list-item:hover {
+    background-color: var(--color-hover-effect);
+    color: var(--color-white);
+    cursor: pointer;
+}
 
+.dashboard-topbar {
+    height: 57.5px;
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 50px;
+}
 
+.topbar {
+    justify-content: space-between;
+    align-items: center;
+}
 
+.topbar .user-profile i {
+    font-size: 20px;
+    color: var(--color-primary);
+    margin-right: 5px;
+}
 
-
+.dashboard-content-area {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-white);
+    margin: 0 auto;
+}
 
 
 
