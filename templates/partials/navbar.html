@@ -1,6 +1,6 @@
 <nav class="navbar">
     <div class="logo">
-        <a href="{% url "home-page" %}"><h2><span class="logo-school-text">School</span><span class="logo-mate-text">Mate</span></h2></a>
+        <a href="{% url "homepage" %}"><h2><span class="logo-school-text">School</span><span class="logo-mate-text">Mate</span></h2></a>
     </div>
     <div class="navbar-menu-items {% if hide_menu %}hide-menu{% endif %}">
         <ul class="navbar-menu-list">
@@ -14,13 +14,6 @@
             {% else %}
                 <li class="list-item"><a href="{% url "login" %}">Sign in</a></li>
             {% endif %}
-            <!-- <li class="list-item"><a href="#">Account</a></li> -->
-            <!-- <li class="list-item">Account
-                <ul class="account-sub-list">
-                    <li class="sign-in"><a href="#">Sign In</a></li>
-                    <li class="Register"><a href="#">Register</a></li>
-                </ul>
-            </li> -->
         </ul>
     </div>
 </nav>

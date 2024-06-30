@@ -1,21 +1,15 @@
 {% load static %}
 <div class="sidebar">
-    <div class="sidebar-profile-display">
-        <div class="profile-picture">
-            <img src="{% static 'images/df_profile_picture.jpeg'  %}" alt="">
-        </div>
-        <div class="user-details">
-            <p>{{user.email}}</p>
-            <a href="{% url 'logout' %}">Logout</a>
-        </div>
+    <div class="sidebar-brand">
+        <h1><i class="fa-solid fa-bars"></i>Menu</h1>
     </div>
     <div class="sidebar-menu-container">
         <div class="sidebar-menus">
             <ul class="sidebar-list">
-                <li class="sidebar-list-item" data-url="{% url 'all-rooms' %}"><i class="fas fa-bed"></i><a href="{% url 'my-rooms' %}">Room List</a></li>
-                <li class="sidebar-list-item" data-url="tenant_list"><i class="fas fa-users"></i>Tenant Profiles</li>
-                <li class="sidebar-list-item" data-url="tenant_profile"><i class="fas fa-envelope-open-text"></i>Manage Tenant Applications</li>
-                <li class="sidebar-list-item" data-url="complaints"><i class="fas fa-circle-exclamation"></i>Manage Complaints</li>
+                <li class="sidebar-list-item" data-url="all_rooms"><i class="fas fa-bed"></i><span class="list-label"><a href="">Room List</span></a></li>
+                <li class="sidebar-list-item" data-url="tenant_list"><i class="fas fa-users"></i><span class="list-label">Tenant Profiles</span></li>
+                <li class="sidebar-list-item" data-url="tenant_profile"><i class="fas fa-envelope-open-text"></i><span class="list-label">Manage Tenant Applications</span></li>
+                <li class="sidebar-list-item" data-url="complaints"><i class="fas fa-circle-exclamation"></i><span class="list-label">Manage Complaints</span></li>
             </ul>
         </div>
     </div>

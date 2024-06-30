@@ -18,18 +18,6 @@
     {% endblock title %}    
 </head>
 <body>
-    <!-- <div class="container">
-        <div>
-            <a href="{% url 'dashboard' %}">HostelMate</a>  
-            {% if request.user.is_authenticated %}
-            | <span>Welcome, {{request.user.employee.first_name}} </span>
-            | <span>
-                <a href="{% url 'logout' %}">Logout</a>
-            </span>
-            {% endif %}
-            <hr>
-        </div>
-    </div> -->
     {% block content %}
 
     {% endblock content %}
