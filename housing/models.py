@@ -21,7 +21,7 @@ class Amenities(models.Model):
 class Hostels(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField("Hostel name", max_length=255, db_index=True)
-    nameslug = models.SlugField(unique=True, blank=True)
+    nameslug = models.SlugField(unique=True, blank=True, db_index=True)
     rating = models.FloatField(default=0)
     regNumber = models.CharField("Hostel Reg. Number", max_length=255, blank=True)
     

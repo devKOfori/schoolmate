@@ -306,6 +306,51 @@ select {
     padding: 7px;
 }
 
+/* Create hostel page styles */
+
+.create-hostel-container {
+    width: 50%;
+    margin: 0 auto;
+    background-color: var(--color-white);
+    
+    margin-top: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.create-hostel-page-header {
+    background-color: var(--color-primary);
+    padding: 10px;
+    color: var(--color-white);
+}
+
+.create-hostel-header-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.create-hostel-form-container {
+    padding: 20px 100px;
+    border-left-style: 1px solid var(--color-border);
+    border-bottom-style: 1px solid var(--color-border);
+    border-right-style: 1px solid var(--color-border);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 16px;
+}
+
+.form-group input {
+    width: 100%;
+    font-size: 17px;
+}
+
+
+
 /* utils */
 
 .grid {
@@ -346,4 +391,17 @@ a {
 
 .error {
     color: var(--color-alert);
+}
+
+.save-button {
+    background-color: var(--color-primary);
+    text-align: center;
+    padding: 7px;
+    width: 25%;
+    border-radius: 3px;
+}
+
+.save-button:hover {
+    background-color: var(--color-hover-effect);
+    cursor: pointer;
 }
