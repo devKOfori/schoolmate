@@ -344,10 +344,16 @@ select {
     font-size: 16px;
 }
 
-.form-group input {
+.form-group input,
+select {
     width: 100%;
     font-size: 17px;
 }
+
+select {
+    padding: 5px 0;
+}
+
 
 
 
