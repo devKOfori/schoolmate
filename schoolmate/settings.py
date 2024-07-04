@@ -42,13 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # added apps
-    'school.apps.SchoolConfig',
+    'hms.apps.HmsConfig',
     'accounts.apps.AccountsConfig',
-    # 'user.apps.UserConfig',
-    # 'hostel.apps.HostelConfig',
-    'employee.apps.EmployeeConfig',
     'housing.apps.HousingConfig',
-    'finmate.apps.FinmateConfig',
 ]
 
 MIDDLEWARE = [

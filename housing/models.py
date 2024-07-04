@@ -1,5 +1,5 @@
 from django.db import models
-from accounts import models as account_models
+from hms import models as hms_models
 import uuid
 from django.conf import settings
 from django.utils.text import slugify
@@ -27,7 +27,7 @@ class Hostels(models.Model):
     
     address = models.CharField("Address", max_length=255)
     city = models.ForeignKey(
-        account_models.City, on_delete=models.SET_NULL,
+        hms_models.City, on_delete=models.SET_NULL,
         null=True, related_name="hostels",
         db_index=True
     )
@@ -63,14 +63,16 @@ class Hostels(models.Model):
         verbose_name_plural = "Hostels"
 
     def save(self, *args, **kwargs):
-        if not self.name_slug:
+        if not self.nameslug:
             slug = slugify(self.name)
-            queryset = Hostels.objects.filter(name_slug=slug)
+            queryset = Hostels.objects.filter(nameslug=slug)
             counter = 1
-            while queryset.exists():
-                self.name_slug = f'{slug}-{counter}'
-                counter += 1
-                queryset = Hostels.objects.filter(name_slug=self.name_slug)
+            if queryset.exists():
+                while queryset.exists():
+                    self.nameslug = f'{slug}-{counter}'
+                    counter += 1
+                    queryset = Hostels.objects.filter(nameslug=self.nameslug)
+            self.nameslug = slug
         super().save(*args, **kwargs)
 
 class HostelAmenities(models.Model):
