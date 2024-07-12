@@ -202,3 +202,14 @@ function preventDefault(e) {
 
 window.onload = disableSidebarItemRedirect;
 // document.addEventListener('DOMContentLoaded', disableSidebarItemRedirect);
+
+document.querySelectorAll('.expand-icon').forEach(expandDiv => {
+    const targetSectionID = expandDiv.getAttribute('data-target');
+    const sectionContent = document.getElementById(targetSectionID);
+
+    if (expandDiv && sectionContent) {
+        expandDiv.addEventListener('click', () => {
+            sectionContent.classList.toggle('toggle-section');
+        });
+    }
+});

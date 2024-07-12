@@ -382,9 +382,29 @@ select {
 }
 
 .panel-body-section-header {
-    border-left: 3px solid var(--color-primary);
+    align-items: center;
+    justify-content: space-between;
     padding: 20px;
-    /* background-color: var(--color-primary); */
+    border-top: 1px solid rgba(69, 68, 68, 0.1);
+    border-bottom: 1px solid rgba(69, 68, 68, 0.1);
+    /* box-shadow: 0 10px 1px -5px rgba(195, 194, 194, 0.1); */
+    background-color: rgba(195, 194, 194, 0.1);
+} 
+
+.toggle-section {
+    display: none;
+}
+
+.section-content {
+    overflow: hidden;
+    /* max-height: 0; */
+    /* opacity: 0; */
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.section-content .toggle-section {
+    max-height: 500px; 
+    opacity: 1;
 }
 
 /* utils */

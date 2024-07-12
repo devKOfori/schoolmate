@@ -3,9 +3,28 @@
 {% block content %}
 <div class="configure-hostel-panel">
     <div class="configure-hostel-panel-header panel-header">
-        <p class="panel-header-title"><i class="fa-solid fa-gear"></i> {{hostel.name}}</p>
+        <p class="panel-header-title"><i class="fa-solid fa-gear"></i> Hostel Settings</p>
     </div>
     <div class="panel-body shadow">
+        <div class="hostel-info-display">
+            <div class="hostel-info">
+                <h2 class="hostel-name">{{hostel.name}}</h2>
+                <p class="regNo">{{hostel.regNumber}}</p>
+            </div>
+            <div class="hostel-address">
+                <div class="location-info">
+                    <span class="city">{{hostel.city}}</span>
+                    <span class="city">{{hostel.city}}</span>
+                </div>
+                <div class="contact-info">
+                    <span class="email">{{hostel.email}}</span>
+                    <span class="phone">{{hostel.phone}}</span>
+                </div>
+                <div class="ratings-info">
+                    <span class="rating">{{hostel.rating}}</span>
+                </div>
+            </div>
+        </div>
         <div class="photos-section-container">
             <div class="hostel-photos-section grid">
                 <div class="hostel-image">First Image</div>
@@ -19,27 +38,69 @@
         <div class="panel-hostel-info">
         </div>
         <div class="panel-body-section block">
-            <h3 class="panel-body-section-header">Blocks</h3>
-            {% for block in blocks %}
-                {{ block }}
-            {% endfor %}
-            <a href="{% url 'create-block' hostel.nameslug  %}">Create New Block</a>
+            <div class="panel-body-section-header flex">
+                <h3 class="">Blocks</h3>
+                <div class="expand-icon">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+            <!-- <a href="{% url 'create-block' hostel.nameslug  %}">Create New Block</a> -->
         </div>
         <div class="panel-body-section floor">
-            <h3 class="panel-body-section-header">Floors</h3>
-            {% for floor in floors %}
-                {{ floor }}
-            {% endfor %}
-            <a href="{% url 'create-floor' hostel.nameslug  %}">Create New Block</a>
+            <div class="panel-body-section-header flex">
+                <h3 class="">Floors</h3>
+                <div class="expand-icon" data-target="floor-section">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+            <div class="section-content toggle-section" id="floor-section">
+                <table class="section-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Block</th>
+                            <th>Description</th>
+                            <th>No. of Rooms</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for floor in floors %}
+                        <tr>
+                            <td>{{floor.name}}</td>
+                            <td>{{floor.block}}</td>
+                            <td>{{floor.description}}</td>
+                            <td>&nbsp;</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="panel-body-section rooms">
-            <h3 class="panel-body-section-header">Rooms</h3>
+            <div class="panel-body-section-header flex">
+                <h3 class="">Rooms</h3>
+                <div class="expand-icon">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
         </div>
         <div class="panel-body-section tenants">
-            <h3 class="panel-body-section-header">Tenants</h3>
+            <div class="panel-body-section-header flex">
+                <h3 class="">Tenants</h3>
+                <div class="expand-icon">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
         </div>
         <div class="panel-body-section amenities">
-            <h3 class="panel-body-section-header">Amenities</h3>
+            <div class="panel-body-section-header flex">
+                <h3 class="">Amenities</h3>
+                <div class="expand-icon">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
