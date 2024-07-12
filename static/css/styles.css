@@ -1,6 +1,7 @@
 :root {
     /* text colors */
-    --color-primary: #007BFF;
+    /* --color-primary: #007BFF; */
+    --color-primary: rgba(0,0,94,1);
     --color-info: #FFC107;
     --color-success: #28A745;
     --color-alert: #DC3545;
@@ -355,7 +356,36 @@ select {
 }
 
 
+/* Configure hostel */
 
+.configure-hostel-panel {
+    width: 100%;
+}
+
+.hostel-photos-section {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    padding: 20px 0;
+}
+
+.hostel-image {
+    width: 70%;
+    height: 300px;
+    object-fit: cover; /* ensures that the image fits into the dimensions (w x h) without distortion*/
+    display: block;
+    border: 1px dashed black;
+    margin: 0 auto;
+}
+
+.view-more-photos {
+    margin-bottom: 20px;
+}
+
+.panel-body-section-header {
+    border-left: 3px solid var(--color-primary);
+    padding: 20px;
+    /* background-color: var(--color-primary); */
+}
 
 /* utils */
 
@@ -410,4 +440,31 @@ a {
 .save-button:hover {
     background-color: var(--color-hover-effect);
     cursor: pointer;
+}
+
+.shadow {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+    background-color: var(--color-primary);
+    padding: 10px;
+    color: var(--color-white);
+}
+
+.panel-header-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.panel-body {
+    background-color: var(--color-white);
+}
+
+.panel-body-section {
+    margin-bottom: 15px;
+}
+
+.panel-body-section-header {
+
 }

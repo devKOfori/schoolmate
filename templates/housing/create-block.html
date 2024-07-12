@@ -3,13 +3,7 @@
 {% block content %}
     <form action="" method="post">
         {% csrf_token %}
-        <label for="block">Block</label>
-        <select name="block" id="block">
-            {% for block in blocks %}
-                <option value="{{block.id}}">{{block.name}}</option>
-            {% endfor %}
-        </select>
-        <label for="name">Floor name</label>
+        <label for="name">Block name</label>
         <input type="text" name="name" id="name">
         <textarea name="description" id="description">Description</textarea>
         <input type="submit" value="Save Record">

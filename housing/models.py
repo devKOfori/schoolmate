@@ -63,6 +63,8 @@ class Hostels(models.Model):
         verbose_name_plural = "Hostels"
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        print(self.pk)
         if not self.nameslug:
             slug = slugify(self.name)
             queryset = Hostels.objects.filter(nameslug=slug)
@@ -74,12 +76,81 @@ class Hostels(models.Model):
                     queryset = Hostels.objects.filter(nameslug=self.nameslug)
             self.nameslug = slug
         super().save(*args, **kwargs)
+        
+        if not is_new:
+            print("I'm here...")
+            block = Blocks.objects.create(
+                hostel = self,
+                name="Main Block",
+                createdby = self.createdby
+            )   
+            Floors.objects.create(
+                block=block,
+                name="Ground Floor",
+                createdby=self.createdby
+            )
+
+    def __str__(self):
+        return f"{self.name}"
+
+class Blocks(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    hostel = models.ForeignKey(
+        Hostels,
+        on_delete=models.CASCADE, 
+        related_name="blocks",
+    )
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.CharField(max_length=255, blank=True)
+    createdby = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    datecreated = models.DateTimeField(auto_now_add=True)
+    dateupdated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "blocks"
+        verbose_name_plural = "Blocks"
+
+    def __str__(self):
+        return f"{self.name}"
+    
+
+class Floors(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    block = models.ForeignKey(
+        Blocks,
+        on_delete=models.CASCADE, 
+        related_name="floors",
+    )
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.CharField(max_length=255, blank=True)
+    createdby = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    datecreated = models.DateTimeField(auto_now_add=True)
+    dateupdated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "floors"
+        verbose_name_plural = "Floors"
+
+    def __str__(self):
+        return f"{self.name}"
 
 class HostelAmenities(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     hostel = models.ForeignKey(Hostels, on_delete=models.CASCADE)
     amenity = models.ForeignKey(Amenities, on_delete=models.CASCADE)
     description = models.CharField(blank=True)
+    createdby = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE, null=True
+    )
+    datecreated = models.DateTimeField(auto_now_add=True)
+    dateupdated = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "hostelamenities"
@@ -109,7 +180,8 @@ class HostelPhotos(models.Model):
 
 class RoomCategories(models.Model):
     # e.g., single, shared, family
-    name = models.CharField(max_length=255)
+    # id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    name = models.CharField(max_length=255, unique=True)
     description = models.CharField(max_length=255, blank=True)
 
     class Meta:

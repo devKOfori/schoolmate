@@ -1,7 +1,7 @@
 from django.db.models.base import Model as Model
 from django.http import HttpRequest, HttpResponse
 from django.views import generic
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from . import models as housing_models
 from . import forms as housing_forms
@@ -56,8 +56,16 @@ class CreateHostelView(generic.CreateView):
 def create_hostel(request):
     cities = hms_models.City.objects.all()
     context = {"cities": cities}
+    hostel_form = housing_forms.CreateHostelForm()
     if request.method == "POST":
-        id = uuid.uuid4()
+        # # id = uuid.uuid4()
+        # form = housing_forms.CreateHostelForm(request.POST)
+        # if form.is_valid():
+        #     print("hey...")
+        #     hostel = form.save()
+        # else:
+        #     print(form.errors)
+        #     print("nay...")
         name = request.POST.get("name")
         regNumber = request.POST.get("regNumber", None)
         address = request.POST.get("address")
@@ -77,15 +85,67 @@ def create_hostel(request):
             longitude=longitude, phone=phone,
             email=email, createdby=createdby
         )
+        # return render(request, "housing/create_hostel.html", context)
         return redirect(reverse("configure-hostel", kwargs={"slugname":hostel.nameslug}))
     else:
         return render(request, "housing/create_hostel.html", context)
     
 def configure_hostel(request, slugname):
     hostel = housing_models.Hostels.objects.get(nameslug=slugname)
+    my_amenities = hostel.amenities.all()
+    all_amenities = housing_models.Amenities.objects.all()
+    blocks = housing_models.Blocks.objects.filter(hostel=hostel)
+    floors = housing_models.Floors.objects.filter(block__hostel=hostel)
     context = {
-        "hostel": hostel
+        "hostel": hostel,
+        "my_amenities": my_amenities,
+        "all_amenities": all_amenities,
+        "blocks": blocks,
+        "floors": floors
     }
     return render(request, "housing/configure_hostel.html",
                    context)
 
+def create_block(request, slugname):
+    hostel = get_object_or_404(housing_models.Hostels, nameslug=slugname)
+    context = {
+        "hostel": hostel
+    }
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        createdby = request.user
+        _ = housing_models.Blocks.objects.create(
+            name=name,
+            description=description,
+            hostel=hostel,
+            createdby=createdby
+        )
+        return redirect(reverse_lazy("dashboard"))
+    else:
+        return render(request, "housing/create-block.html", context)
+
+def create_floor(request, slugname):
+    hostel = get_object_or_404(housing_models.Hostels, nameslug=slugname)
+    context = {
+        "hostel": hostel
+    }
+    if request.method == "POST":
+        name = request.POST.get("name")
+        print(name)
+        description = request.POST.get("description")
+        print(description)
+        block_id = request.POST.get("block")
+        block = housing_models.Blocks.objects.get(id=block_id)
+        createdby = request.user
+        _ = housing_models.Floors.objects.create(
+            name=name,
+            description=description,
+            block=block,
+            createdby=createdby
+        )
+        return redirect(reverse_lazy("dashboard"))
+    else:
+        blocks = housing_models.Blocks.objects.filter(hostel__nameslug=slugname)
+        context["blocks"] = blocks
+        return render(request, "housing/create_floor.html", context)

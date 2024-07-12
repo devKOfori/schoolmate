@@ -1,0 +1,46 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="configure-hostel-panel">
+    <div class="configure-hostel-panel-header panel-header">
+        <p class="panel-header-title"><i class="fa-solid fa-gear"></i> {{hostel.name}}</p>
+    </div>
+    <div class="panel-body shadow">
+        <div class="photos-section-container">
+            <div class="hostel-photos-section grid">
+                <div class="hostel-image">First Image</div>
+                <div class="hostel-image">Second Image</div>
+                <div class="hostel-image">Third Image</div>
+            </div>
+            <div class="view-more-photos">
+                View all photos
+            </div>
+        </div>
+        <div class="panel-hostel-info">
+        </div>
+        <div class="panel-body-section block">
+            <h3 class="panel-body-section-header">Blocks</h3>
+            {% for block in blocks %}
+                {{ block }}
+            {% endfor %}
+            <a href="{% url 'create-block' hostel.nameslug  %}">Create New Block</a>
+        </div>
+        <div class="panel-body-section floor">
+            <h3 class="panel-body-section-header">Floors</h3>
+            {% for floor in floors %}
+                {{ floor }}
+            {% endfor %}
+            <a href="{% url 'create-floor' hostel.nameslug  %}">Create New Block</a>
+        </div>
+        <div class="panel-body-section rooms">
+            <h3 class="panel-body-section-header">Rooms</h3>
+        </div>
+        <div class="panel-body-section tenants">
+            <h3 class="panel-body-section-header">Tenants</h3>
+        </div>
+        <div class="panel-body-section amenities">
+            <h3 class="panel-body-section-header">Amenities</h3>
+        </div>
+    </div>
+</div>
+{% endblock %}
