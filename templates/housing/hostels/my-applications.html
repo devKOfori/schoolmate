@@ -1,0 +1,43 @@
+<div class="rooms">
+    <div class="applications-heading flex">
+        <h1>Applications for Accomodation</h1>
+        {% comment %} <div class="btn-create-item">
+            <a id="create-application-btn" class="create-application-btn" data-nameslug="{{hostel.nameslug}}" href="{% url 'create-room' hostel.nameslug %}"><h3>Create new room</h3></a>
+        </div> {% endcomment %}
+    </div>
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Application ID</th> 
+                <th>Name of Applicant</th> 
+                <th>Room Type</th> 
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Application Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apphostel in applications %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{apphostel.code}}</td>
+                    <td>{{apphostel.application.tenant_name}}</td>
+                    <td>{{apphostel.room_types}}</td>
+                    <td>{{apphostel.application.phone}}</td>
+                    <td>{{apphostel.application.email}}</td>
+                    <td>{{apphostel.application.application_date}}</td>
+                    <td>{{apphostel.status}}</td>
+                    <td>
+                        <i class="fa-solid fa-eye action"></i>
+                        <i class="fa-solid fa-pen action"></i>
+                        <i class="fa-solid fa-trash-can action-delete"></i>
+                        <i class="fa-solid fa-square-plus action"></i>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

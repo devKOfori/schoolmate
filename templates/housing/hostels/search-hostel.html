@@ -1,0 +1,12 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <div class="search-hostel-container grid">
+        {% include "housing/hostels/search-filters.html" %}
+        <div class="list-hostels-container flex">
+            <h1>Search Results:</h1>
+            {% include "housing/hostels/list-hostels.html" %}
+        </div>
+    </div>
+
+{% endblock content %}

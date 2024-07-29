@@ -1,0 +1,34 @@
+<div>
+    <div class="floors-heading flex">
+        <h1>Blocks</h1>
+        <div class="btn-create-item">
+            <a id="create-block-btn" class="create-floor-btn" data-nameslug="{{hostel.nameslug}}" href="{% url 'create-block' hostel.nameslug %}"><h3>Create new block</h3></a>
+        </div>
+    </div>
+
+
+    <div class="blocks grid">
+        {{hostel_data}}
+        {% for block in blocks %}
+            <div class="block">
+                <h1>{{block.name}}</h1>
+                <div class="block-stats">
+                    <div class="block-stat">
+                        <p>No. of floors: &nbsp;{{block.floors.count}}</p>
+                    </div>
+                    <div class="block-stat">
+                        <p>No. of rooms: &nbsp;{{block.floors.count}}</p>
+                    </div>
+                    <div class="block-stat">
+                        <p>No. of tenants: &nbsp;{{block.floors.count}}</p>
+                    </div>
+                </div>
+                <hr class="block-divider">
+                <div class="actions">
+                    <i class="fa-solid fa-eye action"></i>
+                    <i class="fa-solid fa-pen action"></i>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>    

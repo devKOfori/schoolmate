@@ -9,3 +9,9 @@ def generate_hostel_image_upload_path(instance, filename):
     new_filename = f"{uuid.uuid4}{ext}"
     path = os.path.join("photos", "hostels", hostel_folder, new_filename)
     return path
+
+def update_hostel_user(model, hostel, user):
+    model.objects.create(
+        user = user,
+        hostel = hostel
+    )

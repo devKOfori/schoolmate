@@ -1,0 +1,36 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+<div class="application-form-container">
+    <h1>Hostel Application Form</h1>
+    <div class="application">
+        <form class="application-form" id="application-form" action="" method="post">
+            {% csrf_token %}
+            <div class="application-form-group">
+                <label for="tenant_name">Name</label>
+                <input type="text" name="tenant_name" id="tenant_name" required>
+            </div>
+            <div class="application-form-group">
+                <label for="email">Email</label><br>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div class="application-form-group">
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" id="phone" required>
+            </div>
+            <div class="roomtypes-hidden">
+                {{room_types_string}}
+            </div>
+            <div class="tenant-hostels">
+
+            </div>
+            <option value=""></option>
+                <label for="application-date">Application Date</label><br>
+                <input type="datetime" name="application_date" id="application-date" disabled>
+            </div>
+            <button class="appSaveBtn" id="appSaveBtn" type="submit">Save</button>
+            
+        </form>
+    </div>
+</div>
+{% endblock content %}

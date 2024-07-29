@@ -1,9 +1,0 @@
-{% extends "partials/base.html" %}
-
-{% block content %}
-    <h1>Assign Room</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{room_assignment_form}}
-        <input type="submit" value="Assign Room">
-{% endblock content %}

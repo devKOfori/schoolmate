@@ -1,0 +1,45 @@
+{% load static %}
+<div class="hostels-list flex">
+    {% for hostel in hostels %}
+        <div class="hostel-card" id="{{hostel.id}}" data-id="{{hostel.id}}" data-hostel-name="{{hostel.name}}">
+            <div class="card-head">
+                {% if hostel.photos.exists %}
+                    <img src="hostel.photos.first.url" class="card-head-image" alt="photo.jpeg">
+                {% else %}
+                    <img src="{% static 'images/hostel_default.jpg' %}" class="card-head-image" alt="hostel.jpeg">
+                {% endif %}
+                <div class="hover-overlay"></div>
+                <div class="hover-overlay-content">
+                    <a class="add-to-application-lnk" href="" data-hostel-id="{{hostel.id}}"><span>Add Selection</span></a>
+                </div>
+            </div>
+            <div class="hostel-card-body">
+                <h2>{{hostel}}</h2>
+                <div class="hostel-info location">
+                    <i class="fa-solid fa-location-dot"></i> Location
+                    <p>{{hostel.neighborhood}}, {{hostel.city}}</p>
+                </div>
+                <div class="hostel-info phone">
+                    <i class="fa-solid fa-phone"></i> Phone No.
+                    <p>{{hostel.phone}}</p>
+                </div>
+                <div class="hostel-info email">
+                    <i class="fa-solid fa-envelope"></i> Email
+                    <p>{{hostel.email}}</p>
+                </div>
+                <div class="card-footer flex">
+                    <div class="hostel-info rating">
+                        <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-solid fa-star-half-stroke"></i> Rating
+                        <p>{{hostel.rating}}</p>
+                    </div>
+                    <div class="selected-hostel">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="proceed-to-application">
+    <a href="{% url 'submit-application' %}"><span>Continue to application</span></a>
+</div>

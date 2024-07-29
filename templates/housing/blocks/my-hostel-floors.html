@@ -1,0 +1,41 @@
+<div class="floors">
+    <div class="floors-heading flex">
+        <h1>Floors</h1>
+        <div class="btn-create-item">
+            <a id="create-floor-btn" class="create-floor-btn" data-nameslug="{{hostel_data.nameslug}}" href="{% url 'create-floor' hostel_data.nameslug %}"><h3>Create new floor</h3></a>
+        </div>
+    </div>
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th> 
+                <th>Block</th>
+                <th>Created By</th>
+                <th>Created On</th>
+                <th>No. of Rooms</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for block in hostel_data.blocks.all %}
+                {% for floor in block.floors.all %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{floor.name}}</td>
+                    <td>{{floor.block}}</td>
+                    <td>{{floor.createdby}}</td>
+                    <td>{{floor.datecreated}}</td>
+                    <td>{{floor.rooms.count}}</td>
+                    <td>
+                        <i class="fa-solid fa-eye action"></i>
+                        <i class="fa-solid fa-pen action"></i>
+                        <i class="fa-solid fa-trash-can action-delete"></i>
+                        <i class="fa-solid fa-square-plus action"></i>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

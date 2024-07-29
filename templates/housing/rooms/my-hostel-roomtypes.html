@@ -1,0 +1,41 @@
+<div class="rooms">
+    <div class="rooms-heading flex">
+        <h1>Room Types</h1>
+        <div class="btn-create-item">
+            <a id="create-roomtype-btn" class="create-roomtype-btn" data-nameslug="{{hostel.nameslug}}" href="{% url 'create-roomtype' hostel.nameslug %}"><h3>Create new roomtype</h3></a>
+        </div>
+    </div>
+    <table class="item-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Room Type</th> 
+                <th>Total No. of Rooms</th>
+                <th>No. of Rooms occupied</th>
+                <th>Beds/room</th>
+                <th>Price</th>
+                <th>No. of Tenants</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for my_room_type in my_room_types %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{my_room_type.room_type}}</td>
+                    <td>{{my_room_type.number_of_rooms}}</td>
+                    <td>0</td>
+                    <td>{{my_room_type.bed_per_room}}</td>
+                    <td>{{my_room_type.price}}</td>
+                    <td>0</td>
+                    <td>
+                        <i class="fa-solid fa-eye action"></i>
+                        <i class="fa-solid fa-pen action"></i>
+                        <i class="fa-solid fa-trash-can action-delete"></i>
+                        <i class="fa-solid fa-square-plus action"></i>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

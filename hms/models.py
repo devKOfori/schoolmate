@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 import uuid
+
 # Create your models here.
 
 
@@ -14,6 +16,7 @@ class Gender(models.Model):
     def __str__(self):
         return self.name
 
+
 class Nationality(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=255)
@@ -24,7 +27,8 @@ class Nationality(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Country(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=255)
@@ -37,7 +41,8 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Region(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=255)
@@ -48,7 +53,8 @@ class Region(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class City(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=255)
@@ -60,6 +66,27 @@ class City(models.Model):
     def __str__(self):
         return self.name
     
+
+
+class Neighborhoods(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    city = models.ForeignKey(
+        City,
+        verbose_name=_("city"),
+        on_delete=models.CASCADE,
+        related_name="neighborhoods",
+    )
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "neighborhoods"
+        verbose_name = _("neighborhood")
+        verbose_name_plural = _("neighborhoods")
+
+    def __str__(self):
+        return self.name
+
+
 class MaritalStatus(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=255)
@@ -70,6 +97,7 @@ class MaritalStatus(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Relation(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)

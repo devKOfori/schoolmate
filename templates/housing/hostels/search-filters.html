@@ -1,0 +1,79 @@
+<div class="filters-container">
+    <h1>Filter Hostels</h1>
+    <form id="search_form_ID" class="search-form" action="{% url 'search-hostel' %}">
+        <div class="search-form-group">
+            <div class="label">
+                <label for="budget">Budget</label>
+            </div>
+            <div class="budget-range flex">
+                <div class="min-budget">
+                    <label for="min-budget">Min</label><input type="number" step="0.1" name="min-budget" id="min-budget">
+                </div>
+                <div class="max-budget">
+                    <label for="max-budget">Max</label><input type="number" step="0.1" name="max-budget" id="max-budget">
+                </div>
+            </div>
+        </div>
+        <div class="search-form-group">
+            <div class="label">
+                <label for="name">Hostel</label>
+            </div>
+            <input list="hostels" type="text" name="name" id="name">
+            <datalist id="hostels">
+                {% for hostel in hostels %}
+                    <option value="{{hostel.name}}">
+                {% endfor %}
+            </datalist>
+        </div>
+        <div class="search-form-group">
+            <div class="label">
+                <label for="city">City</label>
+            </div>
+            <select name="city" id="city">
+                {% for city in cities %}
+                    <option value="{{city.id}}">{{city}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="search-form-group">
+            <div class="label">
+                <label for="neighborhood">Neighborhood</label>
+            </div>
+            <select name="neighborhood" id="neighborhood">
+                {% for neighborhood in neighborhoods %}
+                    <option value="{{neighborhood.id}}">{{neighborhood}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="search-form-group">
+            <div class="label">
+                <label>Room Types</label>
+            </div>
+            <div class="search-roomtypes grid">
+                {% for roomtype in roomtypes %}
+                    <div class="roomtype">
+                        <input type="checkbox" id="{{roomtype.id}}" name="roomtypes" value="{{roomtype.id}}">
+                        <label for="{{roomtype.id}}">{{roomtype}}</label><br>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="search-form-group">
+            <div class="label">
+                <label>Amenities</label>
+            </div>
+            <div class="search-amenities grid">
+                {% for amenity in amenities %}
+                    <div class="amenity">
+                        <input type="checkbox" id="{{amenity.id}}" name="amenities" value="{{amenity.id}}">
+                        <label for="{{amenity.id}}">{{amenity.name}}</label><br>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="search-hostel-btn">
+            <button type="submit">Search</button>
+            {% comment %} <a data-url="/search-hostel/" href="{% url 'search-hostel' %}"><span>Search</span></a> {% endcomment %}
+        </div>
+    </form>
+</div>

@@ -6,10 +6,19 @@
     <div class="sidebar-menu-container">
         <div class="sidebar-menus">
             <ul class="sidebar-list">
-                <li class="sidebar-list-item" data-url="all_rooms"><i class="fas fa-bed"></i><span class="list-label"><a href="">Room List</span></a></li>
-                <li class="sidebar-list-item" data-url="tenant_list"><i class="fas fa-users"></i><span class="list-label">Tenant Profiles</span></li>
-                <li class="sidebar-list-item" data-url="tenant_profile"><i class="fas fa-envelope-open-text"></i><span class="list-label">Manage Tenant Applications</span></li>
-                <li class="sidebar-list-item" data-url="complaints"><i class="fas fa-circle-exclamation"></i><span class="list-label">Manage Complaints</span></li>
+                
+                <li class="sidebar-list-item" data-url="/dashboard-index/"><i class="fas fa-bed"></i><span class="list-label"><a href="{% url 'dashboard_index' %}">Dashboard</span></a></li>
+                {% comment %} <li class="sidebar-list-item"><i class="fas fa-bed"></i><span class="list-label"><a href="{% url 'dashboard' %}">Dashboard</span></a></li> {% endcomment %}
+                {% comment %} <li class="sidebar-list-item"><span class="list-label"><a href="{% url 'dashboard' %}">Dashboard</span></a></li> {% endcomment %}
+                <li class="sidebar-list-item" data-url="/housing/my-hostel/"><i class="fas fa-bed"></i><span class="list-label"><a href="">My Hostel</a></span></li>
+                <li class="sidebar-list-item" data-url="/housing/my-hostel-blocks/"><i class="fas fa-bed"></i><span class="list-label"><a href="">Blocks</a></span></li>
+                <li class="sidebar-list-item" data-url="/housing/my-hostel-floors/"><i class="fas fa-bed"></i><span class="list-label"><a href="">Floors</a></span></li>
+                <li class="sidebar-list-item" data-url="/housing/my-hostel-rooms/"><i class="fas fa-bed"></i><span class="list-label"><a href="">Rooms</a></span></li>
+                <li class="sidebar-list-item" data-url="/housing/my-hostel-roomtypes/"><i class="fas fa-bed"></i><span class="list-label"><a href="">Room Types</a></span></li>
+                <li class="sidebar-list-item" data-url="tenant_list"><i class="fas fa-users"></i><span class="list-label"><a href="">Tenants</a></span></li>
+                <li class="sidebar-list-item" data-url="/housing/my-hostel-applications/"><i class="fas fa-users"></i><span class="list-label"><a href="">Tenant Applications</a></span></li>
+                <li class="sidebar-list-item" data-url="tenant_profile"><i class="fas fa-envelope-open-text"></i><span class="list-label"><a href="">Complaints</a></span></li>
+                <li class="sidebar-list-item" data-url="complaints"><i class="fas fa-circle-exclamation"></i><span class="list-label"><a href="">Settings</a></span></li>
             </ul>
         </div>
     </div>
