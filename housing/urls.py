@@ -13,7 +13,11 @@ urlpatterns = [
         "my-hostel-floors/", housing_views.get_my_hostel_floors, name="my-hostel-floors"
     ),
     path("my-hostel-rooms/", housing_views.get_my_hostel_rooms, name="my-hostel-rooms"),
-    path("my-hostel-applications/", housing_views.get_my_hostel_applications, name="my-applications"),
+    path(
+        "my-hostel-applications/",
+        housing_views.get_my_hostel_applications,
+        name="my-applications",
+    ),
     path(
         "my-hostel-roomtypes/",
         housing_views.get_my_hostel_roomtypes,
@@ -33,4 +37,10 @@ urlpatterns = [
         housing_views.create_roomtype,
         name="create-roomtype",
     ),
+    path(
+        "make-offer/<str:application_id>/",
+        housing_views.make_housing_offer,
+        name="make-offer",
+    ),
+    
 ]

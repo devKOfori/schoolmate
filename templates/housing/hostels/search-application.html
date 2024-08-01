@@ -1,0 +1,40 @@
+{% extends "partials/base.html" %}
+
+{% block content %}
+    <div class="search-application">
+        <h1>Search your application</h1>
+        <p>Enter your application code in the search box and click the search button</p>
+        <p>Don't remember your application code? <a href="">Click here</a>
+        
+        <div class="form-message">
+            <p>No application with the given code exists. Kindly check your code and search again</p>
+            <p>You can <a href="">click here</a> to recieve your application code in your email.</p>
+        <form>
+            <input type="text" name="application-code" id="search-application" placeholder="Application Code" required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="housing-offer-list">
+        <table class="housing-offer-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Hostel</th>
+                    <th>Room #</th>
+                    <th>Room Type</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Offer Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if application %}
+                    hey
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

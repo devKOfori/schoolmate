@@ -109,3 +109,13 @@ class Relation(models.Model):
 
     def __str__(self):
         return self.name
+
+class University(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    name = models.CharField(_("University"), max_length=255)
+    region = models.ForeignKey(Region, verbose_name=_(""), on_delete=models.SET_NULL, null=True, blank=True)
+    city = models.ForeignKey(City, verbose_name=_(""), on_delete=models.SET_NULL, null=True, blank=True)
+    neighborhood = models.ForeignKey(Neighborhoods, verbose_name=_(""), on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return str(self.name)

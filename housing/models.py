@@ -123,6 +123,9 @@ class Hostels(models.Model):
     def create_roomtype(self, room_type: dict) -> Tuple["HostelRoomTypes", bool]:
         room_type["hostel"] = self
         return HostelRoomTypes.objects.get_or_create(**room_type)
+    
+    def has_room_type(self, room_type):
+        return room_type in self.room_types.all()
 
     def update_hostel_user(self):
         HostelEmployees.objects.create(user=self.createdby, hostel=self)
@@ -278,7 +281,7 @@ class HostelRoomTypes(models.Model):
         verbose_name_plural = "Hostel Room Types"
 
     def __str__(self):
-        return f"{self.hostel} - {self.room_type}"
+        return f"{self.room_type}"
 
 
 class BedTypes(models.Model):
@@ -307,7 +310,7 @@ class Rooms(models.Model):
     dateupdated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.hostel} -{self.room_type} - {self.room_number}"
+        return f"{self.room_number}"
 
     class Meta:
         db_table = "rooms"
@@ -409,8 +412,8 @@ class ApplicationHostel(models.Model):
     hostel = models.ForeignKey(
         Hostels, verbose_name=_("hostels"), on_delete=models.CASCADE
     )
-    room_types = models.ForeignKey(
-        RoomTypes, verbose_name=_("room types"), on_delete=models.SET_NULL, null=True
+    room_type = models.ForeignKey(
+        HostelRoomTypes, verbose_name=_("room types"), on_delete=models.SET_NULL, null=True
     )
     status = models.ForeignKey(
         ApplicationStatus,
@@ -427,3 +430,41 @@ class ApplicationHostel(models.Model):
         db_table = "applicationhostel"
         verbose_name = "application Hostel"
         verbose_name_plural = "applications Hostels"
+
+class Tenant(models.Model):
+    id = models.UUIDField(_("Tenant ID"), default=uuid.uuid4, primary_key=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=_("user"), on_delete=models.CASCADE)
+    gender = models.ForeignKey(hms_models.Gender, verbose_name=_(""), on_delete=models.SET_NULL, null=True, blank=True)
+    birthdate = models.DateField(_("birthdate"), null=True, blank=True)
+    next_of_kin = models.CharField(_("Next of Kin"), max_length=255, blank=True)
+    phone = models.CharField(_("Phone Number"), max_length=50)
+    university = models.ForeignKey(hms_models.University, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return f"{self.user.get_full_name()}"
+    class Meta:
+        db_table = "tenant"
+        verbose_name = "tenant"
+        verbose_name_plural = "tenants"
+
+class HousingOffer(models.Model):
+    id = models.UUIDField(_("Offer ID"), default=uuid.uuid4, primary_key=True)
+    hostel = models.ForeignKey(Hostels, verbose_name=_("hostel"), on_delete=models.CASCADE, related_name="offers")
+    application_hostel = models.ForeignKey(ApplicationHostel, verbose_name=_("hostel application"), on_delete=models.CASCADE)
+    room = models.ForeignKey(Rooms, verbose_name=_(""), on_delete=models.SET_NULL, blank=True, null=True)
+    room_type = models.ForeignKey(HostelRoomTypes, verbose_name=_(""), on_delete=models.SET_NULL, null=True, blank=True)
+    applicant_name = models.CharField(_("Name of Applicant"), max_length=255)
+    email = models.EmailField(_("Applicant Email"), max_length=254)
+    phone = models.CharField(_("Applicant Phone Number"), max_length=50)
+    tenant = models.ForeignKey(Tenant, verbose_name=_("tenant"), on_delete=models.CASCADE, null=True, blank=True)
+    status = models.ForeignKey(ApplicationStatus, verbose_name=_(""), on_delete=models.SET_NULL, null=True, blank=True)
+    date_offered = models.DateTimeField(_("Date Offered"), default=timezone.now)
+    offered_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    comment = models.TextField(_("Comment"), blank=True, null=True)
+
+    def __str__(self) -> str:
+        return f"{str(self.application_hostel)}, {str(self.status)}"
+    class Meta:
+        db_table = "housingoffer"
+        verbose_name = "housing Offer"
+        verbose_name_plural = "housing Offers"

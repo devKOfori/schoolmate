@@ -13,6 +13,12 @@ from utils.room_utils import generate_rooms
 from django.core.exceptions import ObjectDoesNotExist
 from uuid import UUID
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
+
+
+default_application_status = housing_models.ApplicationStatus.objects.get(
+    name="Pending"
+)
 
 
 class CreateHostelView(generic.CreateView):
@@ -183,6 +189,8 @@ def get_my_hostel_roomtypes(request):
 def get_my_hostel_applications(request):
     user = request.user
     user_hostel = user.hostel
+    message = messages.get_messages(request)
+    context = {"messages": message}
     try:
         applications = housing_models.ApplicationHostel.objects.filter(
             hostel=user_hostel
@@ -313,7 +321,9 @@ def search_hostel(request):
 
 
 def submit_application(request):
-    room_types = housing_models.RoomTypes.objects.all()
+    room_types = housing_models.HostelRoomTypes.objects.filter(
+        hostel=request.user.hostel
+    )
     payload = {}
     refine_payload = {}
     room_types_string = ""
@@ -346,17 +356,77 @@ def submit_application(request):
             # application = housing_models.A
             for hostel_id in hostels:
                 hostel = housing_models.Hostels.objects.get(id=hostel_id)
-                room_type = housing_models.RoomTypes.objects.get(
+                room_type = housing_models.HostelRoomTypes.objects.get(
                     id=roomtypes[hostel_id]
                 )
                 housing_models.ApplicationHostel.objects.create(
                     application=application,
                     hostel=hostel,
-                    room_types=room_type,
+                    room_type=room_type,
                     code=application.code,
+                    status=default_application_status,
                 )
             return redirect(reverse_lazy("dashboard"))
         except Exception as e:
             print(f"an error occured while creating application: {e}")
             return render(request, "housing/hostels/application-form.html", context)
     return render(request, "housing/hostels/application-form.html", context)
+
+
+# TODO: only accessible by hostel admins, after they have created their profiles or assigned role to make offers
+def make_housing_offer(request, application_id):
+    hostel = request.user.hostel
+    application_id = UUID(application_id)
+    application_hostel = get_object_or_404(
+        housing_models.ApplicationHostel, application__id=application_id, hostel=hostel
+    )
+    room_type = application_hostel.room_type
+    
+    rooms = housing_models.Rooms.objects.filter(
+        hostel=hostel, room_type=application_hostel.room_type
+    )
+    context = {"application_hostel": application_hostel, "rooms": rooms}
+    if request.method == "POST":
+        room = request.POST.get("offered-room")
+        offer_date = request.POST.get("offer-date")
+        comment = request.POST.get("offer-comment")
+        try:
+            room = get_object_or_404(housing_models.Rooms, id=UUID(room))
+            hostel_offer = housing_models.HousingOffer.objects.create(
+                hostel=hostel,
+                application_hostel=application_hostel,
+                room=room,
+                room_type=room.room_type,
+                applicant_name=application_hostel.application.tenant_name,
+                email=application_hostel.application.email,
+                phone=application_hostel.application.phone,
+                date_offered=offer_date,
+                comment=comment,
+                offered_by=request.user,
+                status=default_application_status,
+            )
+            print(hostel_offer)
+            messages.success(
+                request,
+                _(
+                    f"You have made an offer to {application_hostel.application.tenant_name}. Application ID: {application_hostel.application.code}"
+                ),
+            )
+            return redirect(reverse_lazy("my-applications"))
+        except Exception as e:
+            print(f"An error occured {e}")
+    return render(request, "housing/hostels/create-hostel-offer.html", context)
+
+def search_application(request):
+    application_code = request.GET.get("application-code")
+    context = {}
+    try:
+        application = housing_models.Application.objects.get(code=application_code)
+        context["application"] = application
+        return render(request, "housing/hostels/search-application.html", context)
+    except ObjectDoesNotExist as e:
+        messages.error(request, _(f"No application exists with the given code. Kindly check the code and search again"))
+        return render(request, "housing/hostels/search-application.html")
+
+def housing_offer_details(request, application_code):
+    housing_offer = get_object_or_404(housing_models.HousingOffer, application_hostel__)

@@ -5,6 +5,15 @@
             <a id="create-application-btn" class="create-application-btn" data-nameslug="{{hostel.nameslug}}" href="{% url 'create-room' hostel.nameslug %}"><h3>Create new room</h3></a>
         </div> {% endcomment %}
     </div>
+    {% if messages %}
+        <div class="messages">
+            <ul>
+                {% for message in messages %}
+                    <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
     <table class="item-table">
         <thead>
             <tr>
@@ -25,7 +34,7 @@
                     <td>{{forloop.counter}}</td>
                     <td>{{apphostel.code}}</td>
                     <td>{{apphostel.application.tenant_name}}</td>
-                    <td>{{apphostel.room_types}}</td>
+                    <td>{{apphostel.room_type}}</td>
                     <td>{{apphostel.application.phone}}</td>
                     <td>{{apphostel.application.email}}</td>
                     <td>{{apphostel.application.application_date}}</td>
@@ -34,7 +43,7 @@
                         <i class="fa-solid fa-eye action"></i>
                         <i class="fa-solid fa-pen action"></i>
                         <i class="fa-solid fa-trash-can action-delete"></i>
-                        <i class="fa-solid fa-square-plus action"></i>
+                        <a href="{% url 'make-offer' apphostel.application.id %}"><i class="fa-solid fa-square-plus action"></i></a>
                     </td>
                 </tr>
             {% endfor %}

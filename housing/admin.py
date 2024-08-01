@@ -3,7 +3,8 @@ from .models import (
     Amenities, Hostels, HostelAmenities,
     HostelPhotos, RoomCategories, RoomTypes, 
     HostelRoomTypes, Reviews, Beds, BedTypes,
-    Blocks, RoomBeds, Rooms, Floors, ApplicationStatus, Application, ApplicationHostel
+    Blocks, RoomBeds, Rooms, Floors, ApplicationStatus, Application, ApplicationHostel,
+    Tenant, HousingOffer
 )
 
 # Register your models here.
@@ -24,3 +25,5 @@ admin.site.register(Floors)
 admin.site.register(ApplicationStatus)
 admin.site.register(Application)
 admin.site.register(ApplicationHostel)
+admin.site.register(Tenant)
+admin.site.register(HousingOffer)

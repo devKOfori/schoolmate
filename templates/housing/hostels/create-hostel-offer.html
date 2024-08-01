@@ -1,0 +1,49 @@
+<h1>{{application_hostel.application.code}} - {{application_hostel.application.tenant_name}} - {{application_hostel.room_type}}</h1>
+{% if not rooms %}
+    <div class="no-rooms-available">
+        <p>No available rooms for the selected room type</p>
+        <a href="">Create room</a>
+    </div>
+{% else %}
+    <div class="create-hostel-offer">
+        <h1>Create Offer</h1>
+        <div class="hostel-offer-form">
+            <form method="post">
+                {%csrf_token%}
+                <div class="offer-form-group">
+                    <label for="tenant-name">Tenant Name</label>
+                    <input type="text" name="tenant_name" id="tenant_name" value="{{application_hostel.application.tenant_name}}" disabled>
+                </div>
+                <div class="offer-form-group">
+                    <label for="tenant-email">Tenant Email</label>
+                    <input type="text" name="tenant-email" id="tenant-email" value="{{application_hostel.application.email}}" disabled>
+                </div>
+                <div class="offer-form-group">
+                    <label for="tenant-phone">Tenant Phone</label>
+                    <input type="text" name="tenant-phone" id="tenant-phone" value="{{application_hostel.application.phone}}" disabled>
+                </div>
+                <div class="offer-form-group">
+                    <label for="tenant-roomtype">Tenant Roomtype</label>
+                    <input type="text" name="tenant-roomtype" id="tenant-roomtype" value="{{application_hostel.room_type}}" disabled>
+                </div>
+                <div class="offer-form-group">
+                    <label for="select-room">Select Room</label>
+                    <select name="offered-room" id="offered-room">
+                        {% for room in rooms %}
+                            <option value="{{room.id}}">{{room}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="offer-form-group">
+                    <label for="offer-date">Date Offered</label>
+                    <input type="date" name="offer-date" id="offer-date">
+                </div>
+                <div class="offer-form-group">
+                    <label for="offer-comment">Comment</label>
+                    <textarea name="offer-comment" id="offer-comment"></textarea>
+                </div>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+{% endif %}
