@@ -17,5 +17,15 @@ urlpatterns = [
         housing_views.submit_application,
         name="submit-application",
     ),
-    path("my-offers/<str:application_code>/", housing_views.housing_offer_details, name="my-offer-details"),
+    path("application-sent/", housing_views.application_sent, name="application-sent"),
+    path(
+        "find-application/",
+        housing_views.find_application,
+        name="find-application",
+    ),
+    path(
+        "my-offers/<str:application_code>/",
+        housing_views.housing_offer_details,
+        name="my-offer-details",
+    ),
 ]
