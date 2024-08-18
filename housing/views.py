@@ -14,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from uuid import UUID
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from django.core.mail import send_mail
 
 
 default_application_status = housing_models.ApplicationStatus.objects.get(
@@ -369,20 +370,33 @@ def submit_application(request):
                     code=application.code,
                     status=default_application_status,
                 )
-            return redirect(reverse_lazy("application-sent", kwargs={"application_code": application.code}))
+            send_mail(
+                subject="Application sent successfully.",
+                message="Hello, your application has been sent to the selected hostels.",
+                from_email="groupfiftyeight95@gmail.com",
+                recipient_list=[application.applicant_email],
+                fail_silently=False
+            )
+            return redirect(
+                reverse_lazy(
+                    "application-sent", kwargs={"application_code": application.code}
+                )
+            )
         except Exception as e:
             print(f"an error occured while creating application: {e}")
             return render(request, "housing/hostels/application-form.html", context)
     return render(request, "housing/hostels/application-form.html", context)
 
+
 def application_sent(request):
     context = {}
     return render(request, "housing/hostels/application-sent.html", context)
 
+
 def find_application(request):
     application_code = request.GET.get("application-code")
     print(type(application_code))
-    context = {"application_code":application_code}
+    context = {"application_code": application_code}
     application = housing_models.Application.objects.get(code=application_code)
     context["application"] = application
     return render(request, "housing/hostels/application-details.html", context)
@@ -396,7 +410,7 @@ def make_housing_offer(request, application_id):
         housing_models.ApplicationHostel, application__id=application_id, hostel=hostel
     )
     room_type = application_hostel.room_type
-    
+
     rooms = housing_models.Rooms.objects.filter(
         hostel=hostel, room_type=application_hostel.room_type
     )
@@ -432,6 +446,7 @@ def make_housing_offer(request, application_id):
             print(f"An error occured {e}")
     return render(request, "housing/hostels/create-hostel-offer.html", context)
 
+
 def search_application(request):
     application_code = request.GET.get("application-code")
     context = {}
@@ -440,8 +455,14 @@ def search_application(request):
         context["application"] = application
         return render(request, "housing/hostels/search-application.html", context)
     except ObjectDoesNotExist as e:
-        messages.error(request, _(f"No application exists with the given code. Kindly check the code and search again"))
+        messages.error(
+            request,
+            _(
+                f"No application exists with the given code. Kindly check the code and search again"
+            ),
+        )
         return render(request, "housing/hostels/search-application.html")
+
 
 def housing_offer_details(request, application_code):
     housing_offer = get_object_or_404(housing_models.HousingOffer, application_hostel__)

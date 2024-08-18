@@ -430,6 +430,7 @@ class ApplicationHostel(models.Model):
         db_table = "applicationhostel"
         verbose_name = "application Hostel"
         verbose_name_plural = "applications Hostels"
+        ordering = ("-application__date",)
         
 
 class Tenant(models.Model):
