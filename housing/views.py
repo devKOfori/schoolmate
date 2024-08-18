@@ -321,8 +321,11 @@ def search_hostel(request):
 
 
 def submit_application(request):
-    room_types = housing_models.HostelRoomTypes.objects.filter(
-        hostel=request.user.hostel
+    # room_types = housing_models.HostelRoomTypes.objects.filter(
+    #     hostel=request.user.hostel
+    # )
+    room_types = housing_models.HostelRoomTypes.objects.all(
+        # hostel=request.user.hostel
     )
     payload = {}
     refine_payload = {}
@@ -366,11 +369,23 @@ def submit_application(request):
                     code=application.code,
                     status=default_application_status,
                 )
-            return redirect(reverse_lazy("dashboard"))
+            return redirect(reverse_lazy("application-sent", kwargs={"application_code": application.code}))
         except Exception as e:
             print(f"an error occured while creating application: {e}")
             return render(request, "housing/hostels/application-form.html", context)
     return render(request, "housing/hostels/application-form.html", context)
+
+def application_sent(request):
+    context = {}
+    return render(request, "housing/hostels/application-sent.html", context)
+
+def find_application(request):
+    application_code = request.GET.get("application-code")
+    print(type(application_code))
+    context = {"application_code":application_code}
+    application = housing_models.Application.objects.get(code=application_code)
+    context["application"] = application
+    return render(request, "housing/hostels/application-details.html", context)
 
 
 # TODO: only accessible by hostel admins, after they have created their profiles or assigned role to make offers

@@ -383,11 +383,11 @@ class ApplicationStatus(models.Model):
 class Application(models.Model):
     id = models.UUIDField(_("Application ID"), primary_key=True, default=uuid.uuid4)
     code = models.CharField(_("Application Code"), max_length=50, unique=True)
-    tenant_name = models.CharField(_("Name of Applicant"), max_length=255)
-    email = models.EmailField(_("Email"), max_length=254)
-    phone = models.CharField(_("Phone"), max_length=255)
-    application_date = models.DateTimeField(_("Application Date"), default=timezone.now)
-    hostels = models.ManyToManyField(
+    applicant_name = models.CharField(_("Name of Applicant"), max_length=255)
+    applicant_email = models.EmailField(_("Email"), max_length=254)
+    applicant_phone = models.CharField(_("Phone"), max_length=255)
+    date = models.DateTimeField(_("Application Date"), default=timezone.now)
+    selected_hostels = models.ManyToManyField(
         Hostels,
         verbose_name=_("hostels"),
         related_name="applications",
@@ -430,6 +430,7 @@ class ApplicationHostel(models.Model):
         db_table = "applicationhostel"
         verbose_name = "application Hostel"
         verbose_name_plural = "applications Hostels"
+        
 
 class Tenant(models.Model):
     id = models.UUIDField(_("Tenant ID"), default=uuid.uuid4, primary_key=True)
